@@ -14,6 +14,160 @@ export type Database = {
   }
   public: {
     Tables: {
+      account_baselines: {
+        Row: {
+          ad_account_id: string
+          benchmarks: Json
+          built_at: string | null
+          change_overlay: Json
+          context_questions: Json
+          conversion_lag: Json
+          covered_entities: Json
+          covered_periods: Json
+          created_at: string
+          data_quality: Json
+          expires_at: string | null
+          funnel: Json
+          hypotheses: Json
+          id: string
+          immature_window: Json
+          limitations: Json
+          mode: string
+          seasonality: Json
+          spend_concentration: Json
+          status: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          ad_account_id: string
+          benchmarks?: Json
+          built_at?: string | null
+          change_overlay?: Json
+          context_questions?: Json
+          conversion_lag?: Json
+          covered_entities?: Json
+          covered_periods?: Json
+          created_at?: string
+          data_quality?: Json
+          expires_at?: string | null
+          funnel?: Json
+          hypotheses?: Json
+          id?: string
+          immature_window?: Json
+          limitations?: Json
+          mode?: string
+          seasonality?: Json
+          spend_concentration?: Json
+          status?: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          ad_account_id?: string
+          benchmarks?: Json
+          built_at?: string | null
+          change_overlay?: Json
+          context_questions?: Json
+          conversion_lag?: Json
+          covered_entities?: Json
+          covered_periods?: Json
+          created_at?: string
+          data_quality?: Json
+          expires_at?: string | null
+          funnel?: Json
+          hypotheses?: Json
+          id?: string
+          immature_window?: Json
+          limitations?: Json
+          mode?: string
+          seasonality?: Json
+          spend_concentration?: Json
+          status?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "account_baselines_ad_account_id_fkey"
+            columns: ["ad_account_id"]
+            isOneToOne: false
+            referencedRelation: "ad_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "account_baselines_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      account_learnings: {
+        Row: {
+          ad_account_id: string
+          confidence: string
+          created_at: string
+          entity_ref: Json
+          evidence: Json
+          id: string
+          learning: string
+          outcome: string
+          source_change_id: string | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          ad_account_id: string
+          confidence?: string
+          created_at?: string
+          entity_ref?: Json
+          evidence?: Json
+          id?: string
+          learning: string
+          outcome: string
+          source_change_id?: string | null
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          ad_account_id?: string
+          confidence?: string
+          created_at?: string
+          entity_ref?: Json
+          evidence?: Json
+          id?: string
+          learning?: string
+          outcome?: string
+          source_change_id?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "account_learnings_ad_account_id_fkey"
+            columns: ["ad_account_id"]
+            isOneToOne: false
+            referencedRelation: "ad_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "account_learnings_source_change_id_fkey"
+            columns: ["source_change_id"]
+            isOneToOne: false
+            referencedRelation: "change_log"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "account_learnings_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       action_audit: {
         Row: {
           action_id: string
@@ -117,6 +271,8 @@ export type Database = {
           last_error: string | null
           method: string
           platform: string
+          provider: string | null
+          provider_error_kind: string | null
           scopes: string[]
           status: string
           token_secret_id: string | null
@@ -130,6 +286,8 @@ export type Database = {
           last_error?: string | null
           method?: string
           platform: string
+          provider?: string | null
+          provider_error_kind?: string | null
           scopes?: string[]
           status?: string
           token_secret_id?: string | null
@@ -143,6 +301,8 @@ export type Database = {
           last_error?: string | null
           method?: string
           platform?: string
+          provider?: string | null
+          provider_error_kind?: string | null
           scopes?: string[]
           status?: string
           token_secret_id?: string | null
@@ -161,26 +321,38 @@ export type Database = {
       }
       ad_guardrails: {
         Row: {
+          baseline_freshness_days: number
           daily_audit: boolean
+          forbid_stacked_major_changes: boolean
           guidelines: string
           max_budget_increase_pct: number
           monthly_cap: number | null
+          new_account_min_conversions: number
+          new_account_min_days: number
           updated_at: string
           workspace_id: string
         }
         Insert: {
+          baseline_freshness_days?: number
           daily_audit?: boolean
+          forbid_stacked_major_changes?: boolean
           guidelines?: string
           max_budget_increase_pct?: number
           monthly_cap?: number | null
+          new_account_min_conversions?: number
+          new_account_min_days?: number
           updated_at?: string
           workspace_id: string
         }
         Update: {
+          baseline_freshness_days?: number
           daily_audit?: boolean
+          forbid_stacked_major_changes?: boolean
           guidelines?: string
           max_budget_increase_pct?: number
           monthly_cap?: number | null
+          new_account_min_conversions?: number
+          new_account_min_days?: number
           updated_at?: string
           workspace_id?: string
         }
@@ -189,6 +361,184 @@ export type Database = {
             foreignKeyName: "ad_guardrails_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: true
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ad_jobs: {
+        Row: {
+          ad_account_id: string
+          attempts: number
+          created_at: string
+          cursor: Json
+          dedupe_key: string
+          id: string
+          kind: string
+          last_error: string | null
+          lease_expires_at: string | null
+          lease_token: string | null
+          next_attempt_at: string | null
+          pause_reason: string | null
+          progress: Json
+          status: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          ad_account_id: string
+          attempts?: number
+          created_at?: string
+          cursor?: Json
+          dedupe_key: string
+          id?: string
+          kind: string
+          last_error?: string | null
+          lease_expires_at?: string | null
+          lease_token?: string | null
+          next_attempt_at?: string | null
+          pause_reason?: string | null
+          progress?: Json
+          status?: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          ad_account_id?: string
+          attempts?: number
+          created_at?: string
+          cursor?: Json
+          dedupe_key?: string
+          id?: string
+          kind?: string
+          last_error?: string | null
+          lease_expires_at?: string | null
+          lease_token?: string | null
+          next_attempt_at?: string | null
+          pause_reason?: string | null
+          progress?: Json
+          status?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ad_jobs_ad_account_id_fkey"
+            columns: ["ad_account_id"]
+            isOneToOne: false
+            referencedRelation: "ad_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ad_jobs_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ad_provider_configs: {
+        Row: {
+          created_at: string
+          platform: string
+          provider: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          platform: string
+          provider: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          platform?: string
+          provider?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ad_provider_configs_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ads_api_versions: {
+        Row: {
+          created_at: string
+          notes: string | null
+          platform: string
+          released_at: string | null
+          source_url: string
+          sunset_at: string | null
+          updated_at: string
+          verified_at: string | null
+          version: string
+        }
+        Insert: {
+          created_at?: string
+          notes?: string | null
+          platform: string
+          released_at?: string | null
+          source_url: string
+          sunset_at?: string | null
+          updated_at?: string
+          verified_at?: string | null
+          version: string
+        }
+        Update: {
+          created_at?: string
+          notes?: string | null
+          platform?: string
+          released_at?: string | null
+          source_url?: string
+          sunset_at?: string | null
+          updated_at?: string
+          verified_at?: string | null
+          version?: string
+        }
+        Relationships: []
+      }
+      api_usage: {
+        Row: {
+          created_at: string
+          date: string
+          id: string
+          operations_count: number
+          platform: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          id?: string
+          operations_count?: number
+          platform: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          id?: string
+          operations_count?: number
+          platform?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "api_usage_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
             referencedRelation: "workspaces"
             referencedColumns: ["id"]
           },
@@ -614,13 +964,16 @@ export type Database = {
       campaign_drafts: {
         Row: {
           ad_account_id: string | null
+          baseline_id: string | null
           business_profile_id: string | null
+          campaign_type: string | null
           created_at: string
           creatives: Json
           decided_at: string | null
           decided_by: string | null
           external_campaign_id: string | null
           id: string
+          lessons_from_history: Json | null
           platform: string
           spec: Json
           status: string
@@ -629,13 +982,16 @@ export type Database = {
         }
         Insert: {
           ad_account_id?: string | null
+          baseline_id?: string | null
           business_profile_id?: string | null
+          campaign_type?: string | null
           created_at?: string
           creatives?: Json
           decided_at?: string | null
           decided_by?: string | null
           external_campaign_id?: string | null
           id?: string
+          lessons_from_history?: Json | null
           platform: string
           spec?: Json
           status?: string
@@ -644,13 +1000,16 @@ export type Database = {
         }
         Update: {
           ad_account_id?: string | null
+          baseline_id?: string | null
           business_profile_id?: string | null
+          campaign_type?: string | null
           created_at?: string
           creatives?: Json
           decided_at?: string | null
           decided_by?: string | null
           external_campaign_id?: string | null
           id?: string
+          lessons_from_history?: Json | null
           platform?: string
           spec?: Json
           status?: string
@@ -663,6 +1022,13 @@ export type Database = {
             columns: ["ad_account_id"]
             isOneToOne: false
             referencedRelation: "ad_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "campaign_drafts_baseline_id_fkey"
+            columns: ["baseline_id"]
+            isOneToOne: false
+            referencedRelation: "account_baselines"
             referencedColumns: ["id"]
           },
           {
@@ -684,6 +1050,8 @@ export type Database = {
       campaign_snapshots: {
         Row: {
           ad_account_id: string
+          breakdowns: Json
+          data_maturity: string
           day: string
           external_id: string
           fetched_at: string
@@ -696,6 +1064,8 @@ export type Database = {
         }
         Insert: {
           ad_account_id: string
+          breakdowns?: Json
+          data_maturity?: string
           day: string
           external_id: string
           fetched_at?: string
@@ -708,6 +1078,8 @@ export type Database = {
         }
         Update: {
           ad_account_id?: string
+          breakdowns?: Json
+          data_maturity?: string
           day?: string
           external_id?: string
           fetched_at?: string
@@ -735,12 +1107,74 @@ export type Database = {
           },
         ]
       }
+      change_events: {
+        Row: {
+          actor_type: string
+          ad_account_id: string
+          after_value: Json | null
+          before_value: Json | null
+          created_at: string
+          entity_ref: Json
+          event_type: string
+          id: string
+          occurred_at: string
+          provider_event_id: string | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          actor_type: string
+          ad_account_id: string
+          after_value?: Json | null
+          before_value?: Json | null
+          created_at?: string
+          entity_ref?: Json
+          event_type: string
+          id?: string
+          occurred_at: string
+          provider_event_id?: string | null
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          actor_type?: string
+          ad_account_id?: string
+          after_value?: Json | null
+          before_value?: Json | null
+          created_at?: string
+          entity_ref?: Json
+          event_type?: string
+          id?: string
+          occurred_at?: string
+          provider_event_id?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "change_events_ad_account_id_fkey"
+            columns: ["ad_account_id"]
+            isOneToOne: false
+            referencedRelation: "ad_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "change_events_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       change_log: {
         Row: {
+          ad_account_id: string | null
           after_value: Json | null
           approved_by: string
           before_value: Json | null
           created_at: string
+          created_object_ids: Json
           draft_id: string | null
           entity_id: string
           id: string
@@ -751,10 +1185,12 @@ export type Database = {
           workspace_id: string
         }
         Insert: {
+          ad_account_id?: string | null
           after_value?: Json | null
           approved_by: string
           before_value?: Json | null
           created_at?: string
+          created_object_ids?: Json
           draft_id?: string | null
           entity_id: string
           id?: string
@@ -765,10 +1201,12 @@ export type Database = {
           workspace_id: string
         }
         Update: {
+          ad_account_id?: string | null
           after_value?: Json | null
           approved_by?: string
           before_value?: Json | null
           created_at?: string
+          created_object_ids?: Json
           draft_id?: string | null
           entity_id?: string
           id?: string
@@ -779,6 +1217,13 @@ export type Database = {
           workspace_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "change_log_ad_account_id_fkey"
+            columns: ["ad_account_id"]
+            isOneToOne: false
+            referencedRelation: "ad_accounts"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "change_log_draft_id_fkey"
             columns: ["draft_id"]
@@ -795,6 +1240,76 @@ export type Database = {
           },
           {
             foreignKeyName: "change_log_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      change_outcomes: {
+        Row: {
+          ad_account_id: string
+          change_log_id: string
+          classification: string | null
+          created_at: string
+          evaluated_at: string | null
+          evaluation: Json | null
+          expected: Json
+          id: string
+          pre_snapshot: Json
+          review_after: string
+          success_metric: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          ad_account_id: string
+          change_log_id: string
+          classification?: string | null
+          created_at?: string
+          evaluated_at?: string | null
+          evaluation?: Json | null
+          expected?: Json
+          id?: string
+          pre_snapshot: Json
+          review_after: string
+          success_metric: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          ad_account_id?: string
+          change_log_id?: string
+          classification?: string | null
+          created_at?: string
+          evaluated_at?: string | null
+          evaluation?: Json | null
+          expected?: Json
+          id?: string
+          pre_snapshot?: Json
+          review_after?: string
+          success_metric?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "change_outcomes_ad_account_id_fkey"
+            columns: ["ad_account_id"]
+            isOneToOne: false
+            referencedRelation: "ad_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "change_outcomes_change_log_id_fkey"
+            columns: ["change_log_id"]
+            isOneToOne: true
+            referencedRelation: "change_log"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "change_outcomes_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -1245,6 +1760,69 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "conversations_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      creative_concepts: {
+        Row: {
+          ad_account_id: string | null
+          angle: string
+          created_at: string
+          formats: string[]
+          hook: string | null
+          hypothesis: string
+          id: string
+          offer: string
+          persona: string
+          results: Json
+          status: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          ad_account_id?: string | null
+          angle: string
+          created_at?: string
+          formats?: string[]
+          hook?: string | null
+          hypothesis: string
+          id?: string
+          offer: string
+          persona: string
+          results?: Json
+          status?: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          ad_account_id?: string | null
+          angle?: string
+          created_at?: string
+          formats?: string[]
+          hook?: string | null
+          hypothesis?: string
+          id?: string
+          offer?: string
+          persona?: string
+          results?: Json
+          status?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creative_concepts_ad_account_id_fkey"
+            columns: ["ad_account_id"]
+            isOneToOne: false
+            referencedRelation: "ad_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "creative_concepts_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -1707,6 +2285,69 @@ export type Database = {
           },
         ]
       }
+      experiments: {
+        Row: {
+          ad_account_id: string
+          created_at: string
+          end_date: string | null
+          hypothesis: string
+          id: string
+          planned_sample_or_duration: Json
+          result_summary: Json | null
+          start_date: string | null
+          status: string
+          success_criteria: Json
+          updated_at: string
+          variable_tested: string
+          workspace_id: string
+        }
+        Insert: {
+          ad_account_id: string
+          created_at?: string
+          end_date?: string | null
+          hypothesis: string
+          id?: string
+          planned_sample_or_duration?: Json
+          result_summary?: Json | null
+          start_date?: string | null
+          status?: string
+          success_criteria?: Json
+          updated_at?: string
+          variable_tested: string
+          workspace_id: string
+        }
+        Update: {
+          ad_account_id?: string
+          created_at?: string
+          end_date?: string | null
+          hypothesis?: string
+          id?: string
+          planned_sample_or_duration?: Json
+          result_summary?: Json | null
+          start_date?: string | null
+          status?: string
+          success_criteria?: Json
+          updated_at?: string
+          variable_tested?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "experiments_ad_account_id_fkey"
+            columns: ["ad_account_id"]
+            isOneToOne: false
+            referencedRelation: "ad_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "experiments_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       inbound_emails: {
         Row: {
           created_at: string
@@ -1934,6 +2575,215 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "knowledge_chunks_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      landing_page_audits: {
+        Row: {
+          ad_account_id: string
+          confidence: string
+          content_analysis: Json
+          created_at: string
+          device: string
+          fetched_at: string
+          id: string
+          landing_page_id: string
+          limitations: Json
+          psi: Json
+          scores: Json
+          tracking_findings: Json
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          ad_account_id: string
+          confidence?: string
+          content_analysis?: Json
+          created_at?: string
+          device: string
+          fetched_at?: string
+          id?: string
+          landing_page_id: string
+          limitations?: Json
+          psi?: Json
+          scores?: Json
+          tracking_findings?: Json
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          ad_account_id?: string
+          confidence?: string
+          content_analysis?: Json
+          created_at?: string
+          device?: string
+          fetched_at?: string
+          id?: string
+          landing_page_id?: string
+          limitations?: Json
+          psi?: Json
+          scores?: Json
+          tracking_findings?: Json
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "landing_page_audits_ad_account_id_fkey"
+            columns: ["ad_account_id"]
+            isOneToOne: false
+            referencedRelation: "ad_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "landing_page_audits_landing_page_id_fkey"
+            columns: ["landing_page_id"]
+            isOneToOne: false
+            referencedRelation: "landing_pages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "landing_page_audits_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      landing_page_metrics_daily: {
+        Row: {
+          ad_account_id: string
+          clicks: number
+          conversion_value: number | null
+          conversions: number
+          created_at: string
+          data_maturity: string
+          date: string
+          device: string
+          id: string
+          landing_page_id: string
+          landing_page_views: number | null
+          outbound_clicks: number | null
+          platform: string
+          speed_validity_metrics: Json
+          spend: number
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          ad_account_id: string
+          clicks?: number
+          conversion_value?: number | null
+          conversions?: number
+          created_at?: string
+          data_maturity?: string
+          date: string
+          device?: string
+          id?: string
+          landing_page_id: string
+          landing_page_views?: number | null
+          outbound_clicks?: number | null
+          platform: string
+          speed_validity_metrics?: Json
+          spend?: number
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          ad_account_id?: string
+          clicks?: number
+          conversion_value?: number | null
+          conversions?: number
+          created_at?: string
+          data_maturity?: string
+          date?: string
+          device?: string
+          id?: string
+          landing_page_id?: string
+          landing_page_views?: number | null
+          outbound_clicks?: number | null
+          platform?: string
+          speed_validity_metrics?: Json
+          spend?: number
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "landing_page_metrics_daily_ad_account_id_fkey"
+            columns: ["ad_account_id"]
+            isOneToOne: false
+            referencedRelation: "ad_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "landing_page_metrics_daily_landing_page_id_fkey"
+            columns: ["landing_page_id"]
+            isOneToOne: false
+            referencedRelation: "landing_pages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "landing_page_metrics_daily_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      landing_pages: {
+        Row: {
+          ad_account_id: string
+          created_at: string
+          first_seen: string
+          id: string
+          last_seen: string
+          platforms: string[]
+          source: string
+          updated_at: string
+          url_normalized: string
+          workspace_id: string
+        }
+        Insert: {
+          ad_account_id: string
+          created_at?: string
+          first_seen?: string
+          id?: string
+          last_seen?: string
+          platforms?: string[]
+          source: string
+          updated_at?: string
+          url_normalized: string
+          workspace_id: string
+        }
+        Update: {
+          ad_account_id?: string
+          created_at?: string
+          first_seen?: string
+          id?: string
+          last_seen?: string
+          platforms?: string[]
+          source?: string
+          updated_at?: string
+          url_normalized?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "landing_pages_ad_account_id_fkey"
+            columns: ["ad_account_id"]
+            isOneToOne: false
+            referencedRelation: "ad_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "landing_pages_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -2442,51 +3292,75 @@ export type Database = {
       recommendations: {
         Row: {
           ad_account_id: string | null
+          baseline_id: string | null
+          basis: string | null
+          confidence: string | null
           created_at: string
           decided_at: string | null
           decided_by: string | null
           error: string | null
           estimated_impact: string | null
           evidence: Json
+          history_evidence: Json | null
           id: string
+          implementation_status: string | null
+          pre_change_snapshot: Json | null
           proposed_change: Json
           rationale: string
+          review_after_date: string | null
           risk_level: string
           status: string
+          success_metric: string | null
           title: string
           type: string
           workspace_id: string
         }
         Insert: {
           ad_account_id?: string | null
+          baseline_id?: string | null
+          basis?: string | null
+          confidence?: string | null
           created_at?: string
           decided_at?: string | null
           decided_by?: string | null
           error?: string | null
           estimated_impact?: string | null
           evidence?: Json
+          history_evidence?: Json | null
           id?: string
+          implementation_status?: string | null
+          pre_change_snapshot?: Json | null
           proposed_change?: Json
           rationale: string
+          review_after_date?: string | null
           risk_level?: string
           status?: string
+          success_metric?: string | null
           title: string
           type: string
           workspace_id: string
         }
         Update: {
           ad_account_id?: string | null
+          baseline_id?: string | null
+          basis?: string | null
+          confidence?: string | null
           created_at?: string
           decided_at?: string | null
           decided_by?: string | null
           error?: string | null
           estimated_impact?: string | null
           evidence?: Json
+          history_evidence?: Json | null
           id?: string
+          implementation_status?: string | null
+          pre_change_snapshot?: Json | null
           proposed_change?: Json
           rationale?: string
+          review_after_date?: string | null
           risk_level?: string
           status?: string
+          success_metric?: string | null
           title?: string
           type?: string
           workspace_id?: string
@@ -2497,6 +3371,13 @@ export type Database = {
             columns: ["ad_account_id"]
             isOneToOne: false
             referencedRelation: "ad_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recommendations_baseline_id_fkey"
+            columns: ["baseline_id"]
+            isOneToOne: false
+            referencedRelation: "account_baselines"
             referencedColumns: ["id"]
           },
           {
@@ -3023,6 +3904,57 @@ export type Database = {
           },
         ]
       }
+      structure_audits: {
+        Row: {
+          ad_account_id: string
+          created_at: string
+          id: string
+          platform: string
+          recommendations: Json
+          score: number | null
+          symptoms: Json
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          ad_account_id: string
+          created_at?: string
+          id?: string
+          platform: string
+          recommendations?: Json
+          score?: number | null
+          symptoms?: Json
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          ad_account_id?: string
+          created_at?: string
+          id?: string
+          platform?: string
+          recommendations?: Json
+          score?: number | null
+          symptoms?: Json
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "structure_audits_ad_account_id_fkey"
+            columns: ["ad_account_id"]
+            isOneToOne: false
+            referencedRelation: "ad_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "structure_audits_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       support_requests: {
         Row: {
           created_at: string
@@ -3292,6 +4224,102 @@ export type Database = {
           },
         ]
       }
+      tracking_audits: {
+        Row: {
+          ad_account_id: string
+          created_at: string
+          findings: Json
+          id: string
+          platform: string
+          score: number | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          ad_account_id: string
+          created_at?: string
+          findings?: Json
+          id?: string
+          platform: string
+          score?: number | null
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          ad_account_id?: string
+          created_at?: string
+          findings?: Json
+          id?: string
+          platform?: string
+          score?: number | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tracking_audits_ad_account_id_fkey"
+            columns: ["ad_account_id"]
+            isOneToOne: false
+            referencedRelation: "ad_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tracking_audits_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_context_notes: {
+        Row: {
+          ad_account_id: string
+          created_at: string
+          id: string
+          note: string
+          period_end: string | null
+          period_start: string | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          ad_account_id: string
+          created_at?: string
+          id?: string
+          note: string
+          period_end?: string | null
+          period_start?: string | null
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          ad_account_id?: string
+          created_at?: string
+          id?: string
+          note?: string
+          period_end?: string | null
+          period_start?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_context_notes_ad_account_id_fkey"
+            columns: ["ad_account_id"]
+            isOneToOne: false
+            referencedRelation: "ad_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_context_notes_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_notifications: {
         Row: {
           actor_id: string | null
@@ -3342,6 +4370,27 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       workspace_invitations: {
         Row: {
@@ -3494,6 +4543,7 @@ export type Database = {
         Args: { _token_hash: string }
         Returns: string
       }
+      ads_is_admin: { Args: never; Returns: boolean }
       approve_mature_referral_commissions: { Args: never; Returns: number }
       bump_rate_limit: {
         Args: { _bucket: string; _identifier: string; _window_seconds: number }
