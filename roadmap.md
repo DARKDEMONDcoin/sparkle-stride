@@ -8,6 +8,10 @@
 - [x] المراحل ٣–٦ وأجزاء من ٧ (التقويم، الكوكيز، صورة الشات، رابط الأسعار الهادئ).
 - [x] صفحة التكاملات الموحدة ورابط /chat/siraj (يحوّل للمعرّف الدائم).
 # Roadmap
+## Revised Media Buyer specification — 23 October
+- [x] Compare existing implementation and live schema against the revised brief: step 1 is partial; no revised step is complete end-to-end. Six existing guardrail tests pass; Abdullah's public guide opens without runtime errors.
+- [ ] Complete revised build step 1 only after user confirmation; preserve working features and use additive migrations.
+- [ ] Continue revised steps 2–11 individually, waiting for confirmation after each completed step.
 ## موظف الإعلانات عبدالله — ٢٢ أكتوبر
 - [x] المرحلة ١ (جزئي): عبدالله في الفريق وصفحة الدليل والصورة؛ جداول الإعلانات بحماية المالك؛ قواعد الأمان (+٢٠٪، السقف الشهري، لا تنفيذ بلا موافقة) مع اختبارات؛ واجهة المنصات وTikTok/LinkedIn «قريباً»؛ التعليمات الأساسية في ملف مستقل.
 - [ ] ربط Google/Meta المباشر وتبويب الاتصالات — ينتظر مفاتيح المالك: GOOGLE_ADS_DEVELOPER_TOKEN وGOOGLE_OAUTH_CLIENT_ID/SECRET وMETA_APP_ID/SECRET.
