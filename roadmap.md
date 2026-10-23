@@ -11,6 +11,7 @@
 ## Revised Media Buyer specification — 23 October
 - [x] Compare existing implementation and live schema against the revised brief: step 1 is partial; no revised step is complete end-to-end. Six existing guardrail tests pass; Abdullah's public guide opens without runtime errors.
 - [ ] Complete revised build step 1 only after user confirmation; preserve working features and use additive migrations.
+- [ ] Step 1 approved: first deliver the TanStack-adjusted gap report and verified runtime limits; await separate approval for the background-job scheduling proposal. Keep Adam unchanged.
 - [ ] Continue revised steps 2–11 individually, waiting for confirmation after each completed step.
 ## موظف الإعلانات عبدالله — ٢٢ أكتوبر
 - [x] المرحلة ١ (جزئي): عبدالله في الفريق وصفحة الدليل والصورة؛ جداول الإعلانات بحماية المالك؛ قواعد الأمان (+٢٠٪، السقف الشهري، لا تنفيذ بلا موافقة) مع اختبارات؛ واجهة المنصات وTikTok/LinkedIn «قريباً»؛ التعليمات الأساسية في ملف مستقل.

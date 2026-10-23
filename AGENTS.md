@@ -46,3 +46,4 @@
 - Read-only employee actions (`src/lib/read-only-actions.ts`) run inside the turn without approval and the reply is rewritten from their real result. Why: reads need no consent and the model invented inbox content.
 - Employee email (`employee-email.server.ts`): Svix + DKIM/DMARC checks, idempotent `inbound_emails` rows, Resend replies as the employee. Why: unbroken threads.
 - Chat documents: private bucket + `attachments` table; `chat-files.server.ts` feeds relevant chunks into later turns. Why: follow-ups without re-upload.
+- Media Buyer uses TanStack server functions for app-internal logic and authenticated server routes for external callbacks, not new Supabase Edge Functions; this preserves the existing server architecture and its security boundaries.
