@@ -5,6 +5,7 @@ vi.mock("@tanstack/react-start", () => ({ createServerFn: () => {
 } }));
 vi.mock("@/integrations/supabase/auth-middleware", () => ({ requireSupabaseAuth: {} }));
 import { adsApiHealth, getAdsSettings, saveAdsAuditPreference } from "@/lib/ads/settings.functions";
+import { getAdsHistory } from "@/lib/ads/history.functions";
 
 type Handler = (input: { data: { workspaceId: string; enabled?: boolean }; context: unknown }) => Promise<unknown>;
 function context(owner: boolean, admin = false) {
@@ -12,7 +13,7 @@ function context(owner: boolean, admin = false) {
   return { userId: "user", supabase: { from: vi.fn().mockReturnValue(query), rpc: vi.fn().mockResolvedValue({ data: admin, error: null }) }, query };
 }
 describe("Media Buyer server authorization", () => {
-  it.each([getAdsSettings, saveAdsAuditPreference, adsApiHealth])("rejects a browser workspace not owned by the authenticated user", async (fn) => {
+  it.each([getAdsSettings, saveAdsAuditPreference, adsApiHealth, getAdsHistory])("rejects a browser workspace not owned by the authenticated user", async (fn) => {
     const ctx = context(false);
     await expect((fn as unknown as Handler)({ data: { workspaceId: "other-workspace", enabled: true }, context: ctx })).rejects.toThrow("Forbidden");
     expect(ctx.supabase.from).toHaveBeenCalledTimes(1);

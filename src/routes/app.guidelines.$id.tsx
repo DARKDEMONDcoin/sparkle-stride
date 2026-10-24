@@ -6,6 +6,7 @@ import { getMember } from "@/data/team";
 import { useWorkspace } from "@/lib/data";
 import { AdsGuidelineSettings } from "@/components/app/AdsGuidelineSettings";
 import { AdsConnections } from "@/components/app/AdsConnections";
+import { AdsCampaignHistory } from "@/components/app/AdsCampaignHistory";
 
 export const Route = createFileRoute("/app/guidelines/$id")({
   loader: ({ params }) => {
@@ -40,6 +41,7 @@ function EmployeeGuidelinesPage() {
           <EmployeeGuidelines {...(workspace?.id ? { workspaceId: workspace.id } : {})} employeeId={member.id} employeeName={member.name} />
           {member.id === "abdullah" && workspace?.id && <AdsGuidelineSettings workspaceId={workspace.id} />}
           {member.id === "abdullah" && workspace?.id && <AdsConnections workspaceId={workspace.id} />}
+          {member.id === "abdullah" && workspace?.id && <AdsCampaignHistory workspaceId={workspace.id} />}
         </section>
       </main>
     </AppShell>
