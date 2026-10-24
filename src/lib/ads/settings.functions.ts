@@ -5,7 +5,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { ADS_DEFAULTS, apiLifecycleHealth, validApiVersion } from "./config";
 
-async function verifiedWorkspace(client: SupabaseClient<Database>, userId: string, id: string) {
+export async function verifiedWorkspace(client: SupabaseClient<Database>, userId: string, id: string) {
   const { data, error } = await client.from("workspaces").select("id,owner_id").eq("id", id).eq("owner_id", userId).maybeSingle();
   if (error) throw new Error(error.message);
   if (!data) throw new Error("Forbidden: لا تملك مساحة العمل هذه.");
