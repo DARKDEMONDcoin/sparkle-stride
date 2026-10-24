@@ -18,7 +18,7 @@ export function AdsCampaignHistory({ workspaceId }: { workspaceId: string }) {
     <div className="flex flex-wrap items-center justify-between gap-3">
       <h2 className="font-semibold">تاريخ الحملات</h2>
       <div className="flex flex-wrap items-center gap-2">
-        {Boolean(data?.accounts.length) && <Select value={accountId ?? data?.account?.id} onValueChange={setAccountId}>
+        {Boolean(data?.accounts.length) && <Select value={accountId ?? data?.account?.id ?? ""} onValueChange={setAccountId}>
           <SelectTrigger className="w-52 max-w-full" aria-label="الحساب الإعلاني"><SelectValue /></SelectTrigger>
           <SelectContent>{data?.accounts.map((account) => <SelectItem key={account.id} value={account.id}>{account.name ?? account.external_id}</SelectItem>)}</SelectContent>
         </Select>}

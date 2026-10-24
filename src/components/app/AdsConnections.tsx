@@ -103,7 +103,7 @@ export function AdsConnections({ workspaceId }: { workspaceId: string }) {
             )}
 
             {connections.map((connection) => {
-              const status = STATUS_LABELS[connection.status] ?? STATUS_LABELS.limited!;
+              const status = STATUS_LABELS[connection.status] ?? { label: "بانتظار إكمال الربط", className: "bg-muted text-muted-foreground" };
               return (
                 <div key={connection.id} className="border-t border-border pt-3 space-y-2">
                   <div className="flex items-center justify-between gap-3">
