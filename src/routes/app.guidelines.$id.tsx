@@ -5,6 +5,7 @@ import { EmployeeTopbar } from "@/components/app/EmployeeTopbar";
 import { getMember } from "@/data/team";
 import { useWorkspace } from "@/lib/data";
 import { AdsGuidelineSettings } from "@/components/app/AdsGuidelineSettings";
+import { AdsConnections } from "@/components/app/AdsConnections";
 
 export const Route = createFileRoute("/app/guidelines/$id")({
   loader: ({ params }) => {
