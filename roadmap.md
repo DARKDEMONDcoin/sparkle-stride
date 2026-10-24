@@ -15,6 +15,7 @@
 - [ ] Publish step 1: Vercel project access check returns 403; do not claim deployment.
 - [x] Background scheduling approved in principle: daily Vercel trigger plus durable queued chunks; confirm queue service and costs before later implementation.
 - [x] Step 2 connection layer: provider capabilities/resolution (pipeboard default, per-workspace override, env fallback), Pipeboard partner client (provision/OAuth link/MCP calls, server-only key), connections server functions (list/start/disconnect/capabilities with workspace ownership checks), Connections tab UI on Abdullah's page with consent notice and status badges. 21 tests pass. Direct OAuth path intentionally gated until owner keys arrive; Windsor read-only stub.
+- [ ] Step 3 approved: verify Pipeboard history contracts, implement bounded historical windows and baseline calculations with maturity/quality exclusions, persist resumable progress, and verify real account sync when provider access is available. No external scheduling setup without service/cost approval.
 - [ ] Continue revised steps 3–11 individually, waiting for confirmation after each completed step.
 ## موظف الإعلانات عبدالله — ٢٢ أكتوبر
 - [x] المرحلة ١ (جزئي): عبدالله في الفريق وصفحة الدليل والصورة؛ جداول الإعلانات بحماية المالك؛ قواعد الأمان (+٢٠٪، السقف الشهري، لا تنفيذ بلا موافقة) مع اختبارات؛ واجهة المنصات وTikTok/LinkedIn «قريباً»؛ التعليمات الأساسية في ملف مستقل.
