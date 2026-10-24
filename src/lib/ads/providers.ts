@@ -77,8 +77,9 @@ export function providerConnectionReadiness(kind: AdProviderKind) {
   return { available: false as const, reason };
 }
 
-export function requireProviderConnection(kind: AdProviderKind): never {
-  throw new Error(providerConnectionReadiness(kind).reason);
+export function requireProviderConnection(kind: AdProviderKind): void {
+  const readiness = providerConnectionReadiness(kind);
+  if (!readiness.available) throw new Error(readiness.reason);
 }
 
 const VALID_PROVIDERS: readonly AdProviderKind[] = ["direct", "pipeboard", "windsor"];
