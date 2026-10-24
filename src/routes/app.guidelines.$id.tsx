@@ -4,6 +4,7 @@ import { EmployeeGuidelines } from "@/components/app/EmployeeGuidelines";
 import { EmployeeTopbar } from "@/components/app/EmployeeTopbar";
 import { getMember } from "@/data/team";
 import { useWorkspace } from "@/lib/data";
+import { AdsGuidelineSettings } from "@/components/app/AdsGuidelineSettings";
 
 export const Route = createFileRoute("/app/guidelines/$id")({
   loader: ({ params }) => {
@@ -36,6 +37,7 @@ function EmployeeGuidelinesPage() {
       <main className="mx-auto w-full max-w-3xl" dir="rtl">
         <section className="border-t border-border pt-5">
           <EmployeeGuidelines {...(workspace?.id ? { workspaceId: workspace.id } : {})} employeeId={member.id} employeeName={member.name} />
+          {member.id === "abdullah" && workspace?.id && <AdsGuidelineSettings workspaceId={workspace.id} />}
         </section>
       </main>
     </AppShell>

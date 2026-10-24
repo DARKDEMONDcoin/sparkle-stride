@@ -47,3 +47,4 @@
 - Employee email (`employee-email.server.ts`): Svix + DKIM/DMARC checks, idempotent `inbound_emails` rows, Resend replies as the employee. Why: unbroken threads.
 - Chat documents: private bucket + `attachments` table; `chat-files.server.ts` feeds relevant chunks into later turns. Why: follow-ups without re-upload.
 - Media Buyer uses TanStack server functions for app-internal logic and authenticated server routes for external callbacks, not new Supabase Edge Functions; this preserves the existing server architecture and its security boundaries.
+- Media Buyer extends existing workspace tenancy and brain-item employee guidelines; cross-record tenant validation and server-generated evidence permissions protect isolation without replacing existing employee flows. API lifecycle config is admin-only and distinct from live provider connectivity; unknown sunset dates stay unknown.
