@@ -22,24 +22,24 @@ export const PROVIDER_CAPABILITIES: Record<AdProviderKind, ProviderCapabilities>
   pipeboard: {
     canCreatePMax: false,
     canCreateDemandGen: false,
-    canCreateAdvantagePlus: true,
-    canAuditConversions: true,
-    canEditAssets: true,
+    canCreateAdvantagePlus: false,
+    canAuditConversions: false,
+    canEditAssets: false,
     canReadChangeHistory: false,
     canReadLandingPageMetrics: false,
     canReadConversionLag: false,
-    canWrite: true,
+    canWrite: false,
   },
   direct: {
-    canCreatePMax: true,
-    canCreateDemandGen: true,
-    canCreateAdvantagePlus: true,
-    canAuditConversions: true,
-    canEditAssets: true,
-    canReadChangeHistory: true,
-    canReadLandingPageMetrics: true,
-    canReadConversionLag: true,
-    canWrite: true,
+    canCreatePMax: false,
+    canCreateDemandGen: false,
+    canCreateAdvantagePlus: false,
+    canAuditConversions: false,
+    canEditAssets: false,
+    canReadChangeHistory: false,
+    canReadLandingPageMetrics: false,
+    canReadConversionLag: false,
+    canWrite: false,
   },
   windsor: {
     canCreatePMax: false,
@@ -56,16 +56,30 @@ export const PROVIDER_CAPABILITIES: Record<AdProviderKind, ProviderCapabilities>
 
 /** شرح عربي مبسّط لكل قدرة غير متاحة — يظهر في الواجهة وردود عبدالله. */
 export const CAPABILITY_EXPLANATIONS: Record<keyof ProviderCapabilities, string> = {
-  canCreatePMax: "إنشاء حملات Performance Max يحتاج الربط المباشر بجوجل.",
-  canCreateDemandGen: "إنشاء حملات Demand Gen يحتاج الربط المباشر بجوجل.",
+  canCreatePMax: "إنشاء حملات Performance Max لم يُفعّل ويُتحقق منه بعد.",
+  canCreateDemandGen: "إنشاء حملات Demand Gen لم يُفعّل ويُتحقق منه بعد.",
   canCreateAdvantagePlus: "إنشاء حملات Advantage+‎ غير متاح عبر هذا الموفّر.",
   canAuditConversions: "تدقيق إعداد التحويلات غير متاح عبر هذا الموفّر.",
   canEditAssets: "تعديل الأصول الإعلانية غير متاح عبر هذا الموفّر.",
   canReadChangeHistory: "سجل التغييرات التاريخي غير متاح عبر هذا الموفّر؛ ستنخفض ثقة خط الأساس.",
   canReadLandingPageMetrics: "مقاييس صفحات الهبوط من المنصة غير متاحة عبر هذا الموفّر.",
   canReadConversionLag: "قياس تأخر التحويلات غير متاح عبر هذا الموفّر.",
-  canWrite: "هذا الموفّر للقراءة فقط؛ لا يمكن تنفيذ أي تغيير من خلاله.",
+  canWrite: "تنفيذ التغييرات غير مفعّل؛ يتطلب ربطاً متحققاً منه وموافقة صريحة.",
 };
+
+/** No adapter is operational until its contract and tenant binding are verified. */
+export function providerConnectionReadiness(kind: AdProviderKind) {
+  const reason = kind === "pipeboard"
+    ? "الربط غير مفعّل بعد؛ نحتاج وثائق شريك Pipeboard ومفتاح الشريك والتحقق من عزل الحسابات."
+    : kind === "direct"
+      ? "الربط المباشر مؤجل إلى مرحلة لاحقة."
+      : "ربط Windsor غير مفعّل بعد.";
+  return { available: false as const, reason };
+}
+
+export function requireProviderConnection(kind: AdProviderKind): never {
+  throw new Error(providerConnectionReadiness(kind).reason);
+}
 
 const VALID_PROVIDERS: readonly AdProviderKind[] = ["direct", "pipeboard", "windsor"];
 
