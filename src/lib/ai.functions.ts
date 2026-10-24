@@ -29,6 +29,7 @@ import { replyStructureBlock } from "@/lib/reply-structure";
 import { buildBrandContext } from "@/lib/brand-context.server";
 import { planTurn, turnPlanBlock } from "@/lib/turn-plan";
 import { composeChatOutputs } from "./chat-outputs";
+import { mediaBuyerGuidelines } from "./ads/guidelines";
 
 type Deliverable = {
   title?: string;
@@ -1022,7 +1023,7 @@ export async function runEmployeeTurn(
       }),
       expertMindBlock(agentId, intent),
       intent !== "smalltalk" ? toolbeltBlock(agentId) : "",
-      intent !== "smalltalk"
+      agentId === "abdullah" ? mediaBuyerGuidelines(brain ?? []) : intent !== "smalltalk"
         ? (() => {
             const rules = (brain ?? []).filter((item) => item.kind === "employee_guideline" && item.used_by.includes(agentId));
             return rules.length ? `## تعليمات المالك الخاصة بك\nطبّقها على كل طلب مناسب ما لم يعارضها طلبه الحالي أو قاعدة أمان:\n${rules.map((item) => `- ${item.body ?? item.title}`).join("\n")}` : "";

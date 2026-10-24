@@ -11,7 +11,7 @@
 ## Revised Media Buyer specification — 23 October
 - [x] Compare existing implementation and live schema against the revised brief: step 1 is partial; no revised step is complete end-to-end. Six existing guardrail tests pass; Abdullah's public guide opens without runtime errors.
 - [x] Step 1 foundation: additive schema/RLS, tenant link protection, immutable change log, preserved Abdullah registration, specialized guideline sections, saved default-off audit preference, admin-only API lifecycle panel and configurable versions. New configuration tests pass; database linter has no new findings.
-- [ ] Step 1 authenticated guideline/save and admin-panel end-to-end verification: blocked by external unmanaged authentication and no provisioned admin role; universal every-run guideline injection remains to be validated/completed.
+- [ ] Step 1 authenticated guideline/save and admin-panel end-to-end verification: blocked by external unmanaged authentication and no provisioned admin role. Active Abdullah guidelines now enter the shared employee turn for all intents, with strict employee scope and tests.
 - [ ] Publish step 1: Vercel project access check returns 403; do not claim deployment.
 - [x] Background scheduling approved in principle: daily Vercel trigger plus durable queued chunks; confirm queue service and costs before later implementation.
 - [ ] Continue revised steps 2–11 individually, waiting for confirmation after each completed step.
