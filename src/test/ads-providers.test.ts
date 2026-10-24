@@ -6,6 +6,8 @@ import {
   providerLabel,
   resolveProvider,
   thirdPartyNotice,
+  providerConnectionReadiness,
+  requireProviderConnection,
 } from "@/lib/ads/providers";
 
 describe("Media Buyer provider resolution", () => {
@@ -35,14 +37,15 @@ describe("Media Buyer provider capabilities", () => {
   });
   it("marks pipeboard as unable to read change history or landing metrics", () => {
     const caps = PROVIDER_CAPABILITIES.pipeboard;
-    expect(caps.canWrite).toBe(true);
+    expect(caps.canWrite).toBe(false);
     expect(caps.canReadChangeHistory).toBe(false);
     expect(caps.canReadLandingPageMetrics).toBe(false);
     expect(caps.canReadConversionLag).toBe(false);
   });
-  it("marks direct as fully capable", () => {
-    const caps = PROVIDER_CAPABILITIES.direct;
-    expect(Object.values(caps).every(Boolean)).toBe(true);
+  it.each(["direct", "pipeboard", "windsor"] as const)("keeps unverified %s adapters unavailable for writes and feature claims", (kind) => {
+    expect(Object.values(PROVIDER_CAPABILITIES[kind]).every(value => value === false)).toBe(true);
+    expect(providerConnectionReadiness(kind).available).toBe(false);
+    expect(() => requireProviderConnection(kind)).toThrow();
   });
   it("has a plain-language explanation for every capability flag", () => {
     for (const key of Object.keys(PROVIDER_CAPABILITIES.direct)) {

@@ -4,6 +4,8 @@
  * للمالك، ثم نداء أدوات MCP بالنيابة عنه. مفتاح الشريك لا يغادر الخادم أبداً.
  */
 
+import { requireProviderConnection } from "./providers";
+
 const PARTNER_API = "https://pipeboard.co/api/v1/partners";
 const MCP_HOSTS: Record<"google" | "meta", string> = {
   google: "https://google-ads.mcp.pipeboard.co/",
@@ -30,6 +32,7 @@ export function missingPipeboardConfigError(): Error {
 }
 
 async function partnerCall<T>(config: PipeboardConfig, path: string, body: unknown): Promise<T> {
+  requireProviderConnection("pipeboard");
   const res = await fetch(`${PARTNER_API}${path}`, {
     method: "POST",
     signal: AbortSignal.timeout(20_000),
@@ -95,6 +98,8 @@ export async function callMcpTool(
   tool: string,
   args: Record<string, unknown>,
 ): Promise<unknown> {
+  // Provisional transport must never execute, even if a key is supplied.
+  requireProviderConnection("pipeboard");
   const res = await fetch(MCP_HOSTS[platform], {
     method: "POST",
     signal: AbortSignal.timeout(45_000),

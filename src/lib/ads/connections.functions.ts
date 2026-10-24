@@ -11,6 +11,8 @@ import {
   PROVIDER_CAPABILITIES,
   isAdProviderKind,
   providerLabel,
+  providerConnectionReadiness,
+  requireProviderConnection,
   resolveProvider,
   thirdPartyNotice,
   type AdProviderKind,
@@ -48,12 +50,13 @@ async function providerFor(
   workspaceId: string,
   platform: AdPlatform,
 ): Promise<AdProviderKind> {
-  const { data } = await client
+  const { data, error } = await client
     .from("ad_provider_configs")
     .select("provider")
     .eq("workspace_id", workspaceId)
     .eq("platform", platform)
     .maybeSingle();
+  if (error) throw new Error(error.message);
   const envValue = process.env[`AD_PROVIDER_${platform.toUpperCase()}`];
   return resolveProvider(platform, envValue, data?.provider ?? null);
 }
@@ -85,6 +88,7 @@ export const getAdsConnections = createServerFn({ method: "POST" })
           provider,
           providerLabel: providerLabel(provider),
           capabilities: PROVIDER_CAPABILITIES[provider],
+          readiness: providerConnectionReadiness(provider),
           notice: thirdPartyNotice(provider),
         };
       }),
@@ -107,6 +111,7 @@ export const startAdsConnection = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const workspaceId = await verifiedWorkspace(context.supabase, context.userId, data.workspaceId);
     const provider = await providerFor(context.supabase, workspaceId, data.platform);
+    requireProviderConnection(provider);
 
     if (provider === "pipeboard") {
       const { pipeboardConfig, provisionUser, startOAuth, missingPipeboardConfigError } = await import(
@@ -162,20 +167,9 @@ export const disconnectAdsConnection = createServerFn({ method: "POST" })
     if (readError) throw new Error(readError.message);
     if (!connection) throw new Error("الاتصال غير موجود في مساحتك.");
 
-    // فصل الحسابات المرتبطة أولاً ثم سجل الاتصال نفسه — كلاهما ضمن المساحة.
-    const { error: accountsError } = await context.supabase
-      .from("ad_accounts")
-      .delete()
-      .eq("connection_id", connection.id)
-      .eq("workspace_id", workspaceId);
-    if (accountsError) throw new Error(accountsError.message);
-    const { error } = await context.supabase
-      .from("ad_connections")
-      .delete()
-      .eq("id", connection.id)
-      .eq("workspace_id", workspaceId);
-    if (error) throw new Error(error.message);
-    return { disconnected: true };
+    // Removing account rows can cascade into history and does not revoke OAuth.
+    // Preserve all evidence until provider revocation + non-destructive status exist.
+    throw new Error("الفصل غير مفعّل حتى يكتمل إلغاء صلاحية الموفّر بأمان؛ لم تُحذف سجلات الحساب أو تاريخه.");
   });
 
 /** قدرات الموفّر الحالي لمنصة — يقرأها الوكيل قبل اقتراح أي إجراء. */

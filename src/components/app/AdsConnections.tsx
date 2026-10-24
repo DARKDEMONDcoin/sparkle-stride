@@ -79,7 +79,7 @@ export function AdsConnections({ workspaceId }: { workspaceId: string }) {
               </div>
               <Button
                 size="sm"
-                disabled={busyPlatform === platform.platform}
+                disabled={!platform.readiness.available || busyPlatform === platform.platform}
                 onClick={() => {
                   setBusyPlatform(platform.platform);
                   connect.mutate(platform.platform);
@@ -94,6 +94,10 @@ export function AdsConnections({ workspaceId }: { workspaceId: string }) {
               </Button>
             </div>
 
+            {!platform.readiness.available && (
+              <p className="text-sm text-muted-foreground" role="status">{platform.readiness.reason}</p>
+            )}
+
             {platform.notice && (
               <p className="rounded-lg bg-muted/60 px-3 py-2 text-xs text-muted-foreground">{platform.notice}</p>
             )}
@@ -103,7 +107,7 @@ export function AdsConnections({ workspaceId }: { workspaceId: string }) {
             )}
 
             {connections.map((connection) => {
-              const status = STATUS_LABELS[connection.status] ?? { label: "بانتظار إكمال الربط", className: "bg-muted text-muted-foreground" };
+              const status = STATUS_LABELS[connection.status] ?? { label: "حالة غير معروفة", className: "bg-muted text-muted-foreground" };
               return (
                 <div key={connection.id} className="border-t border-border pt-3 space-y-2">
                   <div className="flex items-center justify-between gap-3">
@@ -113,7 +117,8 @@ export function AdsConnections({ workspaceId }: { workspaceId: string }) {
                     <Button
                       variant="ghost"
                       size="sm"
-                      disabled={remove.isPending}
+                      disabled
+                      title="الفصل غير مفعّل حتى يكتمل إلغاء الصلاحية بأمان"
                       onClick={() => remove.mutate(connection.id)}
                     >
                       <Unplug className="size-4" /> فصل
@@ -136,7 +141,7 @@ export function AdsConnections({ workspaceId }: { workspaceId: string }) {
                   ) : (
                     connection.status === "limited" && (
                       <p className="text-xs text-muted-foreground">
-                        أكمل الربط من النافذة التي فُتحت؛ ستظهر حساباتك هنا تلقائياً.
+                        لم يُتحقق من اكتمال الربط أو استيراد الحسابات بعد.
                       </p>
                     )
                   )}
