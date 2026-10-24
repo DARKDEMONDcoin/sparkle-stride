@@ -9,7 +9,7 @@
 - [x] صفحة التكاملات الموحدة ورابط /chat/siraj (يحوّل للمعرّف الدائم).
 # Roadmap
 ## Revised Media Buyer specification — 23 October
-- [ ] Full-specification verification requested 24 October: compare every section and build step against the complete uploaded brief; distinguish scaffolding from working integrations, report gaps, and preserve step-by-step owner approval before implementation.
+- [x] Full-specification verification requested 24 October: complete 521-line brief reviewed; audit saved in docs/qa/media-buyer-spec-audit.md. Step 2 corrected to partial rather than fully working; steps 3–11 remain incomplete. 31 focused tests and 6 guardrail helper tests pass, but do not establish live integrations or evidence-gate enforcement. Await owner confirmation and verified partner contracts before implementation.
 - [x] Compare existing implementation and live schema against the revised brief: step 1 is partial; no revised step is complete end-to-end. Six existing guardrail tests pass; Abdullah's public guide opens without runtime errors.
 - [x] Step 1 foundation: additive schema/RLS, tenant link protection, immutable change log, preserved Abdullah registration, specialized guideline sections, saved default-off audit preference, admin-only API lifecycle panel and configurable versions. New configuration tests pass; database linter has no new findings.
 - [ ] Step 1 authenticated guideline/save and admin-panel end-to-end verification: blocked by external unmanaged authentication and no provisioned admin role. Active Abdullah guidelines now enter the shared employee turn for all intents, with strict employee scope and tests.
