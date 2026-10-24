@@ -478,6 +478,8 @@ export type Database = {
           released_at: string | null
           source_url: string
           sunset_at: string | null
+          sunset_month: string | null
+          sunset_precision: string
           updated_at: string
           verified_at: string | null
           version: string
@@ -489,6 +491,8 @@ export type Database = {
           released_at?: string | null
           source_url: string
           sunset_at?: string | null
+          sunset_month?: string | null
+          sunset_precision?: string
           updated_at?: string
           verified_at?: string | null
           version: string
@@ -500,6 +504,8 @@ export type Database = {
           released_at?: string | null
           source_url?: string
           sunset_at?: string | null
+          sunset_month?: string | null
+          sunset_precision?: string
           updated_at?: string
           verified_at?: string | null
           version?: string
