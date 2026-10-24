@@ -14,7 +14,8 @@
 - [ ] Step 1 authenticated guideline/save and admin-panel end-to-end verification: blocked by external unmanaged authentication and no provisioned admin role. Active Abdullah guidelines now enter the shared employee turn for all intents, with strict employee scope and tests.
 - [ ] Publish step 1: Vercel project access check returns 403; do not claim deployment.
 - [x] Background scheduling approved in principle: daily Vercel trigger plus durable queued chunks; confirm queue service and costs before later implementation.
-- [ ] Continue revised steps 2–11 individually, waiting for confirmation after each completed step.
+- [x] Step 2 connection layer: provider capabilities/resolution (pipeboard default, per-workspace override, env fallback), Pipeboard partner client (provision/OAuth link/MCP calls, server-only key), connections server functions (list/start/disconnect/capabilities with workspace ownership checks), Connections tab UI on Abdullah's page with consent notice and status badges. 21 tests pass. Direct OAuth path intentionally gated until owner keys arrive; Windsor read-only stub.
+- [ ] Continue revised steps 3–11 individually, waiting for confirmation after each completed step.
 ## موظف الإعلانات عبدالله — ٢٢ أكتوبر
 - [x] المرحلة ١ (جزئي): عبدالله في الفريق وصفحة الدليل والصورة؛ جداول الإعلانات بحماية المالك؛ قواعد الأمان (+٢٠٪، السقف الشهري، لا تنفيذ بلا موافقة) مع اختبارات؛ واجهة المنصات وTikTok/LinkedIn «قريباً»؛ التعليمات الأساسية في ملف مستقل.
 - [ ] ربط Google/Meta المباشر وتبويب الاتصالات — ينتظر مفاتيح المالك: GOOGLE_ADS_DEVELOPER_TOKEN وGOOGLE_OAUTH_CLIENT_ID/SECRET وMETA_APP_ID/SECRET.
