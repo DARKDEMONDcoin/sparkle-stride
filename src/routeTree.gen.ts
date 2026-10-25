@@ -81,6 +81,7 @@ import { Route as ApiPublicSocialAutopilotRouteImport } from './routes/api/publi
 import { Route as ApiPublicSocialQueueRouteImport } from './routes/api/public/social-queue'
 import { Route as ApiPublicTelegramNotifyRouteImport } from './routes/api/public/telegram-notify'
 import { Route as ApiPublicTrackRouteImport } from './routes/api/public/track'
+import { Route as AppAdsCampaignsRouteImport } from './routes/app.ads.campaigns'
 import { Route as AppChatIndexRouteImport } from './routes/app.chat.index'
 import { Route as AppChatIdRouteImport } from './routes/app.chat.$id'
 import { Route as AppGuidelinesIdRouteImport } from './routes/app.guidelines.$id'
@@ -453,6 +454,11 @@ const ApiPublicTrackRoute = ApiPublicTrackRouteImport.update({
   path: '/api/public/track',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppAdsCampaignsRoute = AppAdsCampaignsRouteImport.update({
+  id: '/ads/campaigns',
+  path: '/ads/campaigns',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppChatIndexRoute = AppChatIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -564,6 +570,7 @@ export interface FileRoutesByFullPath {
   '/api/public/social-queue': typeof ApiPublicSocialQueueRoute
   '/api/public/telegram-notify': typeof ApiPublicTelegramNotifyRoute
   '/api/public/track': typeof ApiPublicTrackRoute
+  '/app/ads/campaigns': typeof AppAdsCampaignsRoute
   '/app/chat/$id': typeof AppChatIdRoute
   '/app/guidelines/$id': typeof AppGuidelinesIdRoute
   '/app/chat/': typeof AppChatIndexRoute
@@ -643,6 +650,7 @@ export interface FileRoutesByTo {
   '/api/public/social-queue': typeof ApiPublicSocialQueueRoute
   '/api/public/telegram-notify': typeof ApiPublicTelegramNotifyRoute
   '/api/public/track': typeof ApiPublicTrackRoute
+  '/app/ads/campaigns': typeof AppAdsCampaignsRoute
   '/app/chat/$id': typeof AppChatIdRoute
   '/app/guidelines/$id': typeof AppGuidelinesIdRoute
   '/app/chat': typeof AppChatIndexRoute
@@ -725,6 +733,7 @@ export interface FileRoutesById {
   '/api/public/social-queue': typeof ApiPublicSocialQueueRoute
   '/api/public/telegram-notify': typeof ApiPublicTelegramNotifyRoute
   '/api/public/track': typeof ApiPublicTrackRoute
+  '/app/ads/campaigns': typeof AppAdsCampaignsRoute
   '/app/chat/$id': typeof AppChatIdRoute
   '/app/guidelines/$id': typeof AppGuidelinesIdRoute
   '/app/chat/': typeof AppChatIndexRoute
@@ -808,6 +817,7 @@ export interface FileRouteTypes {
     | '/api/public/social-queue'
     | '/api/public/telegram-notify'
     | '/api/public/track'
+    | '/app/ads/campaigns'
     | '/app/chat/$id'
     | '/app/guidelines/$id'
     | '/app/chat/'
@@ -887,6 +897,7 @@ export interface FileRouteTypes {
     | '/api/public/social-queue'
     | '/api/public/telegram-notify'
     | '/api/public/track'
+    | '/app/ads/campaigns'
     | '/app/chat/$id'
     | '/app/guidelines/$id'
     | '/app/chat'
@@ -968,6 +979,7 @@ export interface FileRouteTypes {
     | '/api/public/social-queue'
     | '/api/public/telegram-notify'
     | '/api/public/track'
+    | '/app/ads/campaigns'
     | '/app/chat/$id'
     | '/app/guidelines/$id'
     | '/app/chat/'
@@ -1537,6 +1549,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicTrackRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app/ads/campaigns': {
+      id: '/app/ads/campaigns'
+      path: '/ads/campaigns'
+      fullPath: '/app/ads/campaigns'
+      preLoaderRoute: typeof AppAdsCampaignsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/chat/': {
       id: '/app/chat/'
       path: '/'
@@ -1628,6 +1647,7 @@ interface AppRouteChildren {
   AppTrustRoute: typeof AppTrustRoute
   AppWorkspaceRoute: typeof AppWorkspaceRoute
   AppIndexRoute: typeof AppIndexRoute
+  AppAdsCampaignsRoute: typeof AppAdsCampaignsRoute
   AppGuidelinesIdRoute: typeof AppGuidelinesIdRoute
 }
 
@@ -1657,6 +1677,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppTrustRoute: AppTrustRoute,
   AppWorkspaceRoute: AppWorkspaceRoute,
   AppIndexRoute: AppIndexRoute,
+  AppAdsCampaignsRoute: AppAdsCampaignsRoute,
   AppGuidelinesIdRoute: AppGuidelinesIdRoute,
 }
 

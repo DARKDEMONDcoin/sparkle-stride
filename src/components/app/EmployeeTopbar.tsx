@@ -3,7 +3,7 @@
  * (التقويم وغيره) حتى لا يفقد المستخدم سياق الموظف عند التنقل.
  */
 import { useNavigate } from "@tanstack/react-router";
-import { BookOpenText, CalendarDays, MessageCircle, PlugZap } from "lucide-react";
+import { BookOpenText, CalendarDays, MessageCircle, PlugZap, ChartNoAxesCombined } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Portrait } from "@/components/site/Portrait";
@@ -15,7 +15,7 @@ export function EmployeeTopbar({
   active,
 }: {
   memberId: string;
-  active: "chat" | "calendar" | "guidelines";
+  active: "chat" | "calendar" | "guidelines" | "campaigns";
 }) {
   const member = getMember(memberId);
   const navigate = useNavigate();
@@ -46,6 +46,7 @@ export function EmployeeTopbar({
         </span>
       </div>
       <div className="chat-employee-navigation" aria-label={`أدوات ${member.name}`}>
+        {member.id === "abdullah" && <Button type="button" variant="ghost" size="sm" className={cn("chat-nav-button", active === "campaigns" && "is-active")} aria-label="الحملات" title="الحملات" onClick={() => void navigate({ to: "/app/ads/campaigns" })}><ChartNoAxesCombined className="size-4" /><span>الحملات</span></Button>}
         <Button
           type="button"
           variant="ghost"

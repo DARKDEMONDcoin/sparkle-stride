@@ -4549,6 +4549,44 @@ export type Database = {
         Args: { _token_hash: string }
         Returns: string
       }
+      ads_checkpoint_job: {
+        Args: {
+          p_cursor: Json
+          p_job_id: string
+          p_lease_token: string
+          p_pause_reason?: string
+          p_progress: Json
+          p_status: string
+        }
+        Returns: boolean
+      }
+      ads_claim_job: {
+        Args: { p_account_id: string; p_job_id: string; p_workspace_id: string }
+        Returns: {
+          ad_account_id: string
+          attempts: number
+          created_at: string
+          cursor: Json
+          dedupe_key: string
+          id: string
+          kind: string
+          last_error: string | null
+          lease_expires_at: string | null
+          lease_token: string | null
+          next_attempt_at: string | null
+          pause_reason: string | null
+          progress: Json
+          status: string
+          updated_at: string
+          workspace_id: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "ad_jobs"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       ads_is_admin: { Args: never; Returns: boolean }
       approve_mature_referral_commissions: { Args: never; Returns: number }
       bump_rate_limit: {
