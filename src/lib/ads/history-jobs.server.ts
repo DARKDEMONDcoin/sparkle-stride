@@ -64,7 +64,7 @@ export async function runHeldHistoryJob(client: SupabaseClient<Database>, scope:
       return job?.lease_token ? { leaseToken: job.lease_token, cursor: job.cursor } : null;
     },
     checkpoint: async (token, cursor, progress, status, reason) => {
-      const { data, error } = await client.rpc("ads_checkpoint_job", { p_job_id: scope.jobId, p_lease_token: token, p_cursor: cursor, p_progress: progress, p_status: status, p_pause_reason: reason ?? undefined });
+      const { data, error } = await client.rpc("ads_checkpoint_job", { p_job_id: scope.jobId, p_lease_token: token, p_cursor: cursor, p_progress: progress, p_status: status, ...(reason ? { p_pause_reason: reason } : {}) });
       if (error) throw new Error("Unable to checkpoint history job");
       return data === true;
     },
