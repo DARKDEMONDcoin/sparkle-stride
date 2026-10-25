@@ -464,14 +464,14 @@ export async function runEmployeeTurn(
 
     // Abdullah cannot bypass evidence protection through chat, Telegram, email or a shared team turn.
     // Step 5 will replace this read-only report path with structured, validated recommendations.
-    if (data.employeeId === "abdullah") {
+    if (data.employeeId === "abdullah" && planTurn(data.message).intent !== "smalltalk") {
       const { abdullahEvidenceReply } = await import("./ads/baseline.server");
       const reply = await abdullahEvidenceReply(supabase, data.workspaceId);
       emit({ type: "step", label: "أتحقق من أدلة الحساب قبل أي توصية" });
       emit({ type: "delta", text: reply });
       const { data: assistant, error } = await supabase.from("messages").insert({ workspace_id: data.workspaceId, employee_id: data.employeeId, conversation_id: data.conversationId, role: "assistant", body: reply, outputs: [] }).select("id").single();
       if (error || !assistant) throw new Error("تعذّر حفظ تقرير الأدلة.");
-      return { qualityScore: null, savedDecisions: null, reply, messageId: assistant.id, createdTaskId: null, needsConnection: null, action: null, imageUrl: null, siteSuggestions: [], sources: [] };
+      return { qualityScore: null, savedDecisions: 0, reply, messageId: assistant.id, createdTaskId: null, needsConnection: null, action: null, imageUrl: null, siteSuggestions: [], sources: [] };
     }
 
     // مستندات هذه الرسالة: تُربط بها، ثم يُبنى سياق كل مستندات المحادثة للمتابعة.
