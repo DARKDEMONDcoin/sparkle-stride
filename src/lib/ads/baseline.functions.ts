@@ -48,3 +48,13 @@ export const saveAdsContextNote = createServerFn({ method: "POST" }).middleware(
     if (error) throw new Error("تعذّر حفظ الملاحظة.");
     return { saved: true };
   });
+
+export const reviewAdsOutcomes = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).inputValidator((input: unknown) => scopeSchema.parse(input))
+  .handler(async ({ data, context }) => {
+    await verifiedWorkspace(context.supabase, context.userId, data.workspaceId);
+    const { data: account } = await context.supabase.from("ad_accounts").select("id").eq("id", data.accountId).eq("workspace_id", data.workspaceId).maybeSingle();
+    if (!account) throw new Error("Forbidden");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { reviewSavedOutcomes } = await import("./outcomes.server");
+    return reviewSavedOutcomes(supabaseAdmin, data.workspaceId, data.accountId);
+  });
