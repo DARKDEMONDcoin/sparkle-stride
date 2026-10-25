@@ -574,6 +574,64 @@ export type Database = {
           },
         ]
       }
+      ads_recommendation_reviews: {
+        Row: {
+          ad_account_id: string
+          created_at: string
+          decided_by: string
+          decision: string
+          id: string
+          proposal: Json
+          recommendation_id: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          ad_account_id: string
+          created_at?: string
+          decided_by: string
+          decision: string
+          id?: string
+          proposal: Json
+          recommendation_id: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          ad_account_id?: string
+          created_at?: string
+          decided_by?: string
+          decision?: string
+          id?: string
+          proposal?: Json
+          recommendation_id?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ads_recommendation_reviews_ad_account_id_fkey"
+            columns: ["ad_account_id"]
+            isOneToOne: false
+            referencedRelation: "ad_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ads_recommendation_reviews_recommendation_id_fkey"
+            columns: ["recommendation_id"]
+            isOneToOne: false
+            referencedRelation: "recommendations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ads_recommendation_reviews_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       api_usage: {
         Row: {
           created_at: string
@@ -3981,8 +4039,10 @@ export type Database = {
       structure_audits: {
         Row: {
           ad_account_id: string
+          coverage: Json
           created_at: string
           id: string
+          limitations: Json
           platform: string
           recommendations: Json
           score: number | null
@@ -3992,8 +4052,10 @@ export type Database = {
         }
         Insert: {
           ad_account_id: string
+          coverage?: Json
           created_at?: string
           id?: string
+          limitations?: Json
           platform: string
           recommendations?: Json
           score?: number | null
@@ -4003,8 +4065,10 @@ export type Database = {
         }
         Update: {
           ad_account_id?: string
+          coverage?: Json
           created_at?: string
           id?: string
+          limitations?: Json
           platform?: string
           recommendations?: Json
           score?: number | null
@@ -4301,9 +4365,11 @@ export type Database = {
       tracking_audits: {
         Row: {
           ad_account_id: string
+          coverage: Json
           created_at: string
           findings: Json
           id: string
+          limitations: Json
           platform: string
           score: number | null
           updated_at: string
@@ -4311,9 +4377,11 @@ export type Database = {
         }
         Insert: {
           ad_account_id: string
+          coverage?: Json
           created_at?: string
           findings?: Json
           id?: string
+          limitations?: Json
           platform: string
           score?: number | null
           updated_at?: string
@@ -4321,9 +4389,11 @@ export type Database = {
         }
         Update: {
           ad_account_id?: string
+          coverage?: Json
           created_at?: string
           findings?: Json
           id?: string
+          limitations?: Json
           platform?: string
           score?: number | null
           updated_at?: string
@@ -4673,6 +4743,19 @@ export type Database = {
           p_evaluation: Json
           p_learning: string
           p_outcome_id: string
+          p_workspace_id: string
+        }
+        Returns: boolean
+      }
+      ads_review_recommendation: {
+        Args: {
+          p_decision: string
+          p_expected_created_at: string
+          p_id: string
+          p_new_change?: Json
+          p_owner_id: string
+          p_review_at?: string
+          p_success_metric?: string
           p_workspace_id: string
         }
         Returns: boolean
