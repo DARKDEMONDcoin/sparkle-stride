@@ -39,11 +39,11 @@ export const psiSchema = z.object({
 export function compactPageSpeed(input: unknown) {
   const parsed = psiSchema.parse(input); const lab = parsed.lighthouseResult;
   const field = parsed.loadingExperience?.metrics;
-  const lcp = field?.LARGEST_CONTENTFUL_PAINT_MS?.percentile ?? null;
-  const inp = field?.INTERACTION_TO_NEXT_PAINT?.percentile ?? null;
-  const rawCls = field?.CUMULATIVE_LAYOUT_SHIFT_SCORE?.percentile;
+  const lcp = field?.["LARGEST_CONTENTFUL_PAINT_MS"]?.percentile ?? null;
+  const inp = field?.["INTERACTION_TO_NEXT_PAINT"]?.percentile ?? null;
+  const rawCls = field?.["CUMULATIVE_LAYOUT_SHIFT_SCORE"]?.percentile;
   const cls = rawCls === undefined ? null : rawCls / 100;
-  return { lab: { performance: lab?.categories?.performance?.score ?? null, lcp: lab?.audits?.["largest-contentful-paint"]?.numericValue ?? null, cls: lab?.audits?.["cumulative-layout-shift"]?.numericValue ?? null }, field: { lcp, inp, cls, lcpStatus: vitalStatus("lcp", lcp), inpStatus: vitalStatus("inp", inp), clsStatus: vitalStatus("cls", cls) }, fieldAvailable: lcp !== null || inp !== null || cls !== null };
+  return { lab: { performance: lab?.categories?.["performance"]?.score ?? null, lcp: lab?.audits?.["largest-contentful-paint"]?.numericValue ?? null, cls: lab?.audits?.["cumulative-layout-shift"]?.numericValue ?? null }, field: { lcp, inp, cls, lcpStatus: vitalStatus("lcp", lcp), inpStatus: vitalStatus("inp", inp), clsStatus: vitalStatus("cls", cls) }, fieldAvailable: lcp !== null || inp !== null || cls !== null };
 }
 
 export type PageMetric = { landing_page_id: string; platform: string; device: string; date: string; data_maturity: string; spend: number; clicks: number; conversions: number; outbound_clicks: number | null; landing_page_views: number | null };
