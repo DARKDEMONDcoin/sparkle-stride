@@ -950,6 +950,7 @@ export async function runEmployeeActionServer(
   admin: Admin,
   params: { workspaceId: string; actionId: string; values: Record<string, string> },
 ): Promise<{ actionId: string; provider: string; result: unknown }> {
+  if (params.actionId.startsWith("abdullah-")) throw new Error("تغييرات عبدالله متوقفة حتى تتوفر أدلة موثقة وموافقة ولقطة ما قبل التغيير ومزود متحقق منه.");
   const dedupeKey = actionDedupeKey(params);
   const now = Date.now();
   for (const [k, at] of recentActions) if (now - at > ACTION_DEDUPE_MS) recentActions.delete(k);
