@@ -31,7 +31,7 @@ export async function runBaselineReview(client: Client, workspaceId: string, acc
   const { data: settings } = await client.from("ad_guardrails").select("new_account_min_days,new_account_min_conversions").eq("workspace_id", workspaceId).maybeSingle();
   const finalReport = settings ? baselineReport({ rows, today: cursor.today, since: cursor.since, complete: false, provenance: null, minDays: settings.new_account_min_days, minConversions: settings.new_account_min_conversions }) : report;
   const overlays: Json[] = [];
-  for (const table of ["change_events", "user_context_notes", "account_learnings", "landing_pages"] as const) {
+  for (const table of ["change_events", "user_context_notes", "account_learnings", "landing_pages", "landing_page_audits"] as const) {
     const { data: rows, error: readError } = await client.from(table).select("*").eq("workspace_id", workspaceId).eq("ad_account_id", accountId).limit(200);
     if (readError) throw new Error("تعذّر قراءة سياق الحساب.");
     overlays.push({ source: table, rows: rows ?? [], truncated: (rows?.length ?? 0) === 200 } as unknown as Json);

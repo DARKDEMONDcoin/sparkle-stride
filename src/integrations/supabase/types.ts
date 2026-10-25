@@ -574,6 +574,96 @@ export type Database = {
           },
         ]
       }
+      ads_page_fix_tickets: {
+        Row: {
+          ad_account_id: string
+          audit_id: string
+          baseline_id: string
+          category: string
+          created_at: string
+          id: string
+          implemented_at: string | null
+          implemented_by: string | null
+          landing_page_id: string
+          review_at: string
+          status: string
+          steps: Json
+          success_metric: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          ad_account_id: string
+          audit_id: string
+          baseline_id: string
+          category: string
+          created_at?: string
+          id?: string
+          implemented_at?: string | null
+          implemented_by?: string | null
+          landing_page_id: string
+          review_at: string
+          status?: string
+          steps: Json
+          success_metric: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          ad_account_id?: string
+          audit_id?: string
+          baseline_id?: string
+          category?: string
+          created_at?: string
+          id?: string
+          implemented_at?: string | null
+          implemented_by?: string | null
+          landing_page_id?: string
+          review_at?: string
+          status?: string
+          steps?: Json
+          success_metric?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ads_page_fix_tickets_ad_account_id_fkey"
+            columns: ["ad_account_id"]
+            isOneToOne: false
+            referencedRelation: "ad_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ads_page_fix_tickets_audit_id_fkey"
+            columns: ["audit_id"]
+            isOneToOne: false
+            referencedRelation: "landing_page_audits"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ads_page_fix_tickets_baseline_id_fkey"
+            columns: ["baseline_id"]
+            isOneToOne: false
+            referencedRelation: "account_baselines"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ads_page_fix_tickets_landing_page_id_fkey"
+            columns: ["landing_page_id"]
+            isOneToOne: false
+            referencedRelation: "landing_pages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ads_page_fix_tickets_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ads_recommendation_reviews: {
         Row: {
           ad_account_id: string
@@ -2869,6 +2959,7 @@ export type Database = {
       landing_pages: {
         Row: {
           ad_account_id: string
+          audit_not_before: string | null
           created_at: string
           first_seen: string
           id: string
@@ -2881,6 +2972,7 @@ export type Database = {
         }
         Insert: {
           ad_account_id: string
+          audit_not_before?: string | null
           created_at?: string
           first_seen?: string
           id?: string
@@ -2893,6 +2985,7 @@ export type Database = {
         }
         Update: {
           ad_account_id?: string
+          audit_not_before?: string | null
           created_at?: string
           first_seen?: string
           id?: string
@@ -4735,7 +4828,23 @@ export type Database = {
           isSetofReturn: true
         }
       }
+      ads_claim_page_audit: {
+        Args: {
+          p_account_id: string
+          p_page_id: string
+          p_workspace_id: string
+        }
+        Returns: boolean
+      }
       ads_is_admin: { Args: never; Returns: boolean }
+      ads_mark_page_fix: {
+        Args: {
+          p_owner_id: string
+          p_ticket_id: string
+          p_workspace_id: string
+        }
+        Returns: boolean
+      }
       ads_record_outcome: {
         Args: {
           p_account_id: string
