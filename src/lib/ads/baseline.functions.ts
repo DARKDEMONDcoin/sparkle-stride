@@ -44,7 +44,7 @@ export const saveAdsContextNote = createServerFn({ method: "POST" }).middleware(
     await verifiedWorkspace(context.supabase, context.userId, data.workspaceId);
     const { data: account } = await context.supabase.from("ad_accounts").select("id").eq("id", data.accountId).eq("workspace_id", data.workspaceId).maybeSingle();
     if (!account) throw new Error("Forbidden");
-    const { error } = await context.supabase.from("user_context_notes").insert({ workspace_id: data.workspaceId, ad_account_id: data.accountId, note: data.note, period_start: data.since, period_end: data.until });
+    const { error } = await context.supabase.from("user_context_notes").insert({ workspace_id: data.workspaceId, ad_account_id: data.accountId, note: data.note, period_start: data.since ?? null, period_end: data.until ?? null });
     if (error) throw new Error("تعذّر حفظ الملاحظة.");
     return { saved: true };
   });

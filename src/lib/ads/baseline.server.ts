@@ -17,13 +17,19 @@ export async function runBaselineReview(client: Client, workspaceId: string, acc
     if (pageError) throw new Error("تعذّر حفظ جزء المراجعة؛ يمكن استئناف المهمة لاحقاً.");
     return { status: "queued" };
   }
-  const { data: sources, error: sourceError } = await client.from("ads_baseline_sources").select("payload").eq("baseline_id", cursor.baselineId).eq("workspace_id", workspaceId).eq("ad_account_id", accountId).limit(3001);
-  if (sourceError) throw new Error("تعذّر قراءة أدلة المراجعة.");
-  const parsed = (sources ?? []).map((source) => baselineSourceSchema.safeParse(source.payload));
+  const sources: { payload: Json }[] = [];
+  for (let offset = 0; offset < 3000; offset += 1000) {
+    const { data: page, error: sourceError } = await client.from("ads_baseline_sources").select("payload").eq("baseline_id", cursor.baselineId).eq("workspace_id", workspaceId).eq("ad_account_id", accountId).order("id").range(offset, offset + 999);
+    if (sourceError) throw new Error("تعذّر قراءة أدلة المراجعة.");
+    sources.push(...(page ?? []));
+    if ((page?.length ?? 0) < 1000) break;
+  }
+  const parsed = sources.map((source) => baselineSourceSchema.safeParse(source.payload));
+  const rows = parsed.flatMap((row) => row.success ? [{ ...row.data, metrics: row.data.metrics ?? null, breakdowns: row.data.breakdowns ?? null }] : []);
   // Provider verification cannot be supplied by the browser or invented from cached metrics.
-  const report = baselineReport({ rows: parsed.flatMap((row) => row.success ? [row.data] : []), today: cursor.today, since: cursor.since, complete: parsed.every((row) => row.success) && (sources?.length ?? 0) <= 3000, provenance: null });
+  const report = baselineReport({ rows, today: cursor.today, since: cursor.since, complete: parsed.every((row) => row.success) && sources.length < 3000, provenance: null });
   const { data: settings } = await client.from("ad_guardrails").select("new_account_min_days,new_account_min_conversions").eq("workspace_id", workspaceId).maybeSingle();
-  const finalReport = settings ? baselineReport({ rows: parsed.flatMap((row) => row.success ? [row.data] : []), today: cursor.today, since: cursor.since, complete: false, provenance: null, minDays: settings.new_account_min_days, minConversions: settings.new_account_min_conversions }) : report;
+  const finalReport = settings ? baselineReport({ rows, today: cursor.today, since: cursor.since, complete: false, provenance: null, minDays: settings.new_account_min_days, minConversions: settings.new_account_min_conversions }) : report;
   const overlays: Json[] = [];
   for (const table of ["change_events", "user_context_notes", "account_learnings", "landing_pages"] as const) {
     const { data: rows, error: readError } = await client.from(table).select("*").eq("workspace_id", workspaceId).eq("ad_account_id", accountId).limit(200);
