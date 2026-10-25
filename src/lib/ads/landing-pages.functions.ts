@@ -21,14 +21,12 @@ export const getAdsLandingPages = createServerFn({ method: "POST" }).middleware(
   const account = data.accountId ? accounts?.find((a) => a.id === data.accountId) : accounts?.[0];
   if (data.accountId && !account) throw new Error("Forbidden");
   if (!account) return { accounts: accounts ?? [], account: null, pages: [], audits: [], tickets: [], opportunities: [], truncated: false };
-  const scope = (table: "landing_pages" | "landing_page_audits" | "ads_page_fix_tickets" | "landing_page_metrics_daily") => context.supabase.from(table).select("*").eq("workspace_id", data.workspaceId).eq("ad_account_id", account.id);
   const [pages, audits, tickets, metrics] = await Promise.all([
     context.supabase.from("landing_pages").select("*").eq("workspace_id", data.workspaceId).eq("ad_account_id", account.id).order("last_seen", { ascending: false }).limit(101),
     context.supabase.from("landing_page_audits").select("*").eq("workspace_id", data.workspaceId).eq("ad_account_id", account.id).order("created_at", { ascending: false }).limit(201),
     context.supabase.from("ads_page_fix_tickets").select("*").eq("workspace_id", data.workspaceId).eq("ad_account_id", account.id).order("created_at", { ascending: false }).limit(101),
     context.supabase.from("landing_page_metrics_daily").select("*").eq("workspace_id", data.workspaceId).eq("ad_account_id", account.id).order("date", { ascending: false }).limit(1001),
   ]);
-  void scope;
   if (pages.error || audits.error || tickets.error || metrics.error) throw new Error("تعذّر قراءة صفحات الوصول.");
   // Saved metrics lack verified provider ingestion while on hold. Do not rank from them.
   return { accounts: accounts ?? [], account, pages: pages.data?.slice(0, 100) ?? [], audits: audits.data?.slice(0, 200) ?? [], tickets: tickets.data?.slice(0, 100) ?? [], opportunities: pageOpportunities([]), truncated: (pages.data?.length ?? 0) > 100 || (audits.data?.length ?? 0) > 200 || (tickets.data?.length ?? 0) > 100 || (metrics.data?.length ?? 0) > 1000 };

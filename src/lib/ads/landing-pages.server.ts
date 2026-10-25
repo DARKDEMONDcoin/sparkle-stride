@@ -45,6 +45,7 @@ export async function auditPublicAdPage(client: Client, page: { id: string; work
       content.checks = parsed.checks; limitations.push(...parsed.limitations);
     } else limitations.push("التوصيات وخطوات الإصلاح متوقفة حتى يتوفر أساس حساب جاهز وحديث وموثّق.");
   } catch { limitations.push("الصفحة أو الفحص غير متاح؛ أرسل HTML أو لقطة شاشة أو وصفاً. لم تُؤكّد صلاحية الصفحة."); }
+  content.limitations = limitations;
   const { error } = await client.from("landing_page_audits").insert({ workspace_id: page.workspace_id, ad_account_id: page.ad_account_id, landing_page_id: page.id, device, psi: psi as Json, content_analysis: content as Json, tracking_findings: tracking as Json, scores: {}, confidence: "low", limitations });
   if (error) throw new Error("تعذّر حفظ فحص الصفحة.");
   return { saved: true, limitations };

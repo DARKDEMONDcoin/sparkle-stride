@@ -3,7 +3,7 @@
  * (التقويم وغيره) حتى لا يفقد المستخدم سياق الموظف عند التنقل.
  */
 import { useNavigate } from "@tanstack/react-router";
-import { BookOpenText, CalendarDays, MessageCircle, PlugZap, ChartNoAxesCombined, BookOpenCheck, ClipboardCheck, Activity, Network } from "lucide-react";
+import { BookOpenText, CalendarDays, MessageCircle, PlugZap, ChartNoAxesCombined, BookOpenCheck, ClipboardCheck, Activity, Network, PanelsTopLeft } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Portrait } from "@/components/site/Portrait";
@@ -15,7 +15,7 @@ export function EmployeeTopbar({
   active,
 }: {
   memberId: string;
-  active: "chat" | "calendar" | "guidelines" | "campaigns" | "baseline" | "recommendations" | "tracking" | "structure";
+  active: "chat" | "calendar" | "guidelines" | "campaigns" | "baseline" | "recommendations" | "tracking" | "structure" | "landing-pages";
 }) {
   const member = getMember(memberId);
   const navigate = useNavigate();
@@ -49,6 +49,7 @@ export function EmployeeTopbar({
         {member.id === "abdullah" && <Button type="button" variant="ghost" size="sm" className={cn("chat-nav-button", active === "campaigns" && "is-active")} aria-label="الحملات" title="الحملات" onClick={() => void navigate({ to: "/app/ads/campaigns" })}><ChartNoAxesCombined className="size-4" /><span>الحملات</span></Button>}
         {member.id === "abdullah" && <Button type="button" variant="ghost" size="sm" className={cn("chat-nav-button", active === "baseline" && "is-active")} aria-label="أساس الحساب" title="أساس الحساب" onClick={() => void navigate({ to: "/app/ads/baseline" })}><BookOpenCheck className="size-4" /><span>أساس الحساب</span></Button>}
         {member.id === "abdullah" && <>
+          <Button variant="ghost" size="sm" className={cn("chat-nav-button", active === "landing-pages" && "is-active")} title="صفحات الوصول" aria-label="صفحات الوصول" onClick={() => void navigate({ to: "/app/ads/landing-pages" })}><PanelsTopLeft className="size-4" /><span>صفحات الوصول</span></Button>
           <Button variant="ghost" size="sm" className={cn("chat-nav-button", active === "recommendations" && "is-active")} title="التوصيات" aria-label="التوصيات" onClick={() => void navigate({ to: "/app/ads/recommendations" })}><ClipboardCheck className="size-4" /><span>التوصيات</span></Button>
           <Button variant="ghost" size="sm" className={cn("chat-nav-button", active === "tracking" && "is-active")} title="صحة التتبع" aria-label="صحة التتبع" onClick={() => void navigate({ to: "/app/ads/tracking" })}><Activity className="size-4" /><span>صحة التتبع</span></Button>
           <Button variant="ghost" size="sm" className={cn("chat-nav-button", active === "structure" && "is-active")} title="تدقيق الهيكل" aria-label="تدقيق الهيكل" onClick={() => void navigate({ to: "/app/ads/structure" })}><Network className="size-4" /><span>الهيكل</span></Button>
