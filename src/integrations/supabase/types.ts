@@ -4666,6 +4666,17 @@ export type Database = {
         }
       }
       ads_is_admin: { Args: never; Returns: boolean }
+      ads_record_outcome: {
+        Args: {
+          p_account_id: string
+          p_classification: string
+          p_evaluation: Json
+          p_learning: string
+          p_outcome_id: string
+          p_workspace_id: string
+        }
+        Returns: boolean
+      }
       approve_mature_referral_commissions: { Args: never; Returns: number }
       bump_rate_limit: {
         Args: { _bucket: string; _identifier: string; _window_seconds: number }
