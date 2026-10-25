@@ -83,6 +83,9 @@ import { Route as ApiPublicTelegramNotifyRouteImport } from './routes/api/public
 import { Route as ApiPublicTrackRouteImport } from './routes/api/public/track'
 import { Route as AppAdsBaselineRouteImport } from './routes/app.ads.baseline'
 import { Route as AppAdsCampaignsRouteImport } from './routes/app.ads.campaigns'
+import { Route as AppAdsRecommendationsRouteImport } from './routes/app.ads.recommendations'
+import { Route as AppAdsStructureRouteImport } from './routes/app.ads.structure'
+import { Route as AppAdsTrackingRouteImport } from './routes/app.ads.tracking'
 import { Route as AppChatIndexRouteImport } from './routes/app.chat.index'
 import { Route as AppChatIdRouteImport } from './routes/app.chat.$id'
 import { Route as AppGuidelinesIdRouteImport } from './routes/app.guidelines.$id'
@@ -465,6 +468,21 @@ const AppAdsCampaignsRoute = AppAdsCampaignsRouteImport.update({
   path: '/ads/campaigns',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAdsRecommendationsRoute = AppAdsRecommendationsRouteImport.update({
+  id: '/ads/recommendations',
+  path: '/ads/recommendations',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAdsStructureRoute = AppAdsStructureRouteImport.update({
+  id: '/ads/structure',
+  path: '/ads/structure',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAdsTrackingRoute = AppAdsTrackingRouteImport.update({
+  id: '/ads/tracking',
+  path: '/ads/tracking',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppChatIndexRoute = AppChatIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -578,6 +596,9 @@ export interface FileRoutesByFullPath {
   '/api/public/track': typeof ApiPublicTrackRoute
   '/app/ads/baseline': typeof AppAdsBaselineRoute
   '/app/ads/campaigns': typeof AppAdsCampaignsRoute
+  '/app/ads/recommendations': typeof AppAdsRecommendationsRoute
+  '/app/ads/structure': typeof AppAdsStructureRoute
+  '/app/ads/tracking': typeof AppAdsTrackingRoute
   '/app/chat/$id': typeof AppChatIdRoute
   '/app/guidelines/$id': typeof AppGuidelinesIdRoute
   '/app/chat/': typeof AppChatIndexRoute
@@ -659,6 +680,9 @@ export interface FileRoutesByTo {
   '/api/public/track': typeof ApiPublicTrackRoute
   '/app/ads/baseline': typeof AppAdsBaselineRoute
   '/app/ads/campaigns': typeof AppAdsCampaignsRoute
+  '/app/ads/recommendations': typeof AppAdsRecommendationsRoute
+  '/app/ads/structure': typeof AppAdsStructureRoute
+  '/app/ads/tracking': typeof AppAdsTrackingRoute
   '/app/chat/$id': typeof AppChatIdRoute
   '/app/guidelines/$id': typeof AppGuidelinesIdRoute
   '/app/chat': typeof AppChatIndexRoute
@@ -743,6 +767,9 @@ export interface FileRoutesById {
   '/api/public/track': typeof ApiPublicTrackRoute
   '/app/ads/baseline': typeof AppAdsBaselineRoute
   '/app/ads/campaigns': typeof AppAdsCampaignsRoute
+  '/app/ads/recommendations': typeof AppAdsRecommendationsRoute
+  '/app/ads/structure': typeof AppAdsStructureRoute
+  '/app/ads/tracking': typeof AppAdsTrackingRoute
   '/app/chat/$id': typeof AppChatIdRoute
   '/app/guidelines/$id': typeof AppGuidelinesIdRoute
   '/app/chat/': typeof AppChatIndexRoute
@@ -828,6 +855,9 @@ export interface FileRouteTypes {
     | '/api/public/track'
     | '/app/ads/baseline'
     | '/app/ads/campaigns'
+    | '/app/ads/recommendations'
+    | '/app/ads/structure'
+    | '/app/ads/tracking'
     | '/app/chat/$id'
     | '/app/guidelines/$id'
     | '/app/chat/'
@@ -909,6 +939,9 @@ export interface FileRouteTypes {
     | '/api/public/track'
     | '/app/ads/baseline'
     | '/app/ads/campaigns'
+    | '/app/ads/recommendations'
+    | '/app/ads/structure'
+    | '/app/ads/tracking'
     | '/app/chat/$id'
     | '/app/guidelines/$id'
     | '/app/chat'
@@ -992,6 +1025,9 @@ export interface FileRouteTypes {
     | '/api/public/track'
     | '/app/ads/baseline'
     | '/app/ads/campaigns'
+    | '/app/ads/recommendations'
+    | '/app/ads/structure'
+    | '/app/ads/tracking'
     | '/app/chat/$id'
     | '/app/guidelines/$id'
     | '/app/chat/'
@@ -1575,6 +1611,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAdsCampaignsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/ads/recommendations': {
+      id: '/app/ads/recommendations'
+      path: '/ads/recommendations'
+      fullPath: '/app/ads/recommendations'
+      preLoaderRoute: typeof AppAdsRecommendationsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/ads/structure': {
+      id: '/app/ads/structure'
+      path: '/ads/structure'
+      fullPath: '/app/ads/structure'
+      preLoaderRoute: typeof AppAdsStructureRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/ads/tracking': {
+      id: '/app/ads/tracking'
+      path: '/ads/tracking'
+      fullPath: '/app/ads/tracking'
+      preLoaderRoute: typeof AppAdsTrackingRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/chat/': {
       id: '/app/chat/'
       path: '/'
@@ -1668,6 +1725,9 @@ interface AppRouteChildren {
   AppIndexRoute: typeof AppIndexRoute
   AppAdsBaselineRoute: typeof AppAdsBaselineRoute
   AppAdsCampaignsRoute: typeof AppAdsCampaignsRoute
+  AppAdsRecommendationsRoute: typeof AppAdsRecommendationsRoute
+  AppAdsStructureRoute: typeof AppAdsStructureRoute
+  AppAdsTrackingRoute: typeof AppAdsTrackingRoute
   AppGuidelinesIdRoute: typeof AppGuidelinesIdRoute
 }
 
@@ -1699,6 +1759,9 @@ const AppRouteChildren: AppRouteChildren = {
   AppIndexRoute: AppIndexRoute,
   AppAdsBaselineRoute: AppAdsBaselineRoute,
   AppAdsCampaignsRoute: AppAdsCampaignsRoute,
+  AppAdsRecommendationsRoute: AppAdsRecommendationsRoute,
+  AppAdsStructureRoute: AppAdsStructureRoute,
+  AppAdsTrackingRoute: AppAdsTrackingRoute,
   AppGuidelinesIdRoute: AppGuidelinesIdRoute,
 }
 
