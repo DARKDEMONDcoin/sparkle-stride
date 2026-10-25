@@ -72,7 +72,8 @@ export function performanceComparison(rows: CachedHistoryRow[], since: string, s
     const entity = candidates.filter((r) => r.external_id === externalId);
     const beforeRows = entity.filter((r) => r.day < split); const afterRows = entity.filter((r) => r.day >= split);
     const before = aggregateHistory(beforeRows); const after = aggregateHistory(afterRows);
-    const complete = [beforeRows, afterRows].every((window) => window.length > 0 && window.every((r) => r.data_maturity === "mature"));
+    const expectedDays = [(Date.parse(split) - Date.parse(since)) / 86400000, (Date.parse(until) - Date.parse(split)) / 86400000];
+    const complete = [beforeRows, afterRows].every((window, index) => new Set(window.map((r) => r.day)).size === expectedDays[index] && window.length === expectedDays[index] && aggregateHistory(window).excluded === 0);
     return { externalId, name: entity[0]?.name ?? externalId, before, after, complete, cpaDelta: complete && before.cpa && after.cpa !== null ? (after.cpa - before.cpa) / before.cpa : null };
   });
 }

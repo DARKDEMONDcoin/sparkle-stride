@@ -64,5 +64,8 @@ export async function abdullahEvidenceReply(client: Client, workspaceId: string)
   const strings = (value: unknown) => z.array(z.string()).safeParse(value);
   const limitations = strings(baseline?.limitations);
   const questions = strings(baseline?.context_questions);
-  return [`جارٍ تعلّم حسابك: ${account.name ?? account.external_id}.`, "مراجعة البيانات المحفوظة لا تعني اكتمال الأدلة؛ لن أقدّم توصيات أو تغييرات أو مسودات حملات حتى تكتمل المراجعة الموثقة.", ...(limitations.success ? limitations.data.slice(0, 4) : ["ابدأ مراجعة البيانات المحفوظة في صفحة أساس الحساب."]), ...(questions.success ? questions.data.slice(0, 5) : [...CONTEXT_QUESTIONS])].join("\n\n");
+  const { data: recommendations, error: recError } = await client.from("recommendations").select("title,rationale,status,success_metric,review_after_date").eq("workspace_id", workspaceId).eq("ad_account_id", account.id).eq("employee_id", "abdullah").order("created_at", { ascending: false }).limit(3);
+  if (recError) throw new Error("تعذّر قراءة التوصيات المحفوظة.");
+  const saved = (recommendations ?? []).map((rec) => `مقترح محفوظ — ${rec.title}\n${rec.rationale}\nالحالة: ${rec.status} · مقياس النجاح: ${rec.success_metric ?? "غير محدد"} · المراجعة: ${rec.review_after_date ?? "غير محددة"}\nهذا عرض لسجل سابق، وليس توصية جديدة أو تأكيداً لصلاحية تنفيذه.`);
+  return [`جارٍ تعلّم حسابك: ${account.name ?? account.external_id}.`, "مراجعة البيانات المحفوظة لا تعني اكتمال الأدلة؛ لن أقدّم توصيات أو تغييرات أو مسودات حملات حتى تكتمل المراجعة الموثقة.", ...(limitations.success ? limitations.data.slice(0, 4) : ["ابدأ مراجعة البيانات المحفوظة في صفحة أساس الحساب."]), ...saved, ...(questions.success ? questions.data.slice(0, 5) : [...CONTEXT_QUESTIONS])].join("\n\n");
 }

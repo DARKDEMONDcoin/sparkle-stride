@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { changeSchema, reviewGuard, trackingAudit, structureAudit, type ApprovalEvidence } from "@/lib/ads/analysis";
+import { changeSchema, reviewGuard, trackingAudit, structureAudit, performanceComparison, type ApprovalEvidence } from "@/lib/ads/analysis";
 const change = changeSchema.parse({ kind: "budget", entity: { level: "campaign", externalId: "c" }, campaignId: "c", newDaily: 120, summary: "Increase budget" });
 const evidence: ApprovalEvidence = { currentDaily: 100, monthlyCommitted: 3000, daysInMonth: 30, trackingHealthy: true, landingPageHealthy: true, weakConversion: false, learning: false, learningEndsAt: "2026-10-15", lagDays: 7, mature: true, capturedAt: "2026-10-25T12:00:00Z", entityCovered: true, parentCovered: true, activeMajorChange: false };
 const options = { maxIncreasePct: 20, monthlyCap: 4000, successMetric: "CPA", reviewAt: "2026-11-01T12:00:00Z", acknowledgeLearning: false, individual: true };
@@ -19,6 +19,11 @@ describe("Media Buyer approval rules", () => {
   it("requires learning warning for bidding changes", () => expect(reviewGuard({ ...change, kind: "bid_strategy" }, { ...evidence, learning: true }, options, now).ok).toBe(false));
 });
 describe("honest audit coverage", () => {
+  it("missing comparison days never produce performance deltas", () => {
+    const rows = ["2026-09-01", "2026-10-01"].map((day) => ({ external_id: "c", name: "c", day, metrics: { spend: 10, impressions: 100, clicks: 10, conversions: 2, conversionValue: 20 }, data_maturity: "mature", level: "campaign", parent_external_id: null, breakdowns: {}, fetched_at: "2026-10-25T12:00:00Z" }));
+    expect(performanceComparison(rows, "2026-09-01", "2026-10-01", "2026-10-31")[0]?.cpaDelta).toBeNull();
+    expect(performanceComparison(rows, "2026-09-01", "2026-10-01", "2026-10-31")[0]?.complete).toBe(false);
+  });
   it("missing conversion setup has no health score", () => { const report = trackingAudit("meta", null); expect(report.score).toBeNull(); expect(report.coverage.verified).toBe(false); expect(report.findings[0]?.code).toBe("setup_unavailable"); });
   it("missing structure evidence has no symptoms or consolidation claims", () => { const report = structureAudit([], "2026-09-01", "2026-10-01"); expect(report.symptoms).toEqual([]); expect(report.score).toBeNull(); expect(report.recommendations).toEqual([]); });
 });
