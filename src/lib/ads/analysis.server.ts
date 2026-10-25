@@ -5,6 +5,7 @@ import { evidenceGate } from "./baseline";
 import { baselineSourceSchema } from "./baseline";
 import { performanceComparison, structureAudit, trackingAudit } from "./analysis";
 import type { CachedHistoryRow } from "./dashboard";
+import { accountCalendarDay } from "./history";
 
 type Client = SupabaseClient<Database>;
 export async function analyzeSavedAccount(client: Client, workspaceId: string, accountId: string) {
@@ -37,7 +38,7 @@ export async function analyzeSavedAccount(client: Client, workspaceId: string, a
   return { status: "reviewed" as const, reason: null, comparison: performanceComparison(rows, since, split, period.until), limitations: ["مقارنة وصفية من الأدلة المحفوظة فقط؛ لا مزامنة جديدة أو تنفيذ.", "نتائج غير ناضجة أو فترات ناقصة لا تُستخدم لاستنتاج التحسن أو التدهور."] };
 }
 export async function auditSavedAccount(client: Client, workspaceId: string, accountId: string, kind: "tracking" | "structure") {
-  const { data: account, error } = await client.from("ad_accounts").select("platform").eq("workspace_id", workspaceId).eq("id", accountId).maybeSingle();
+  const { data: account, error } = await client.from("ad_accounts").select("platform,timezone").eq("workspace_id", workspaceId).eq("id", accountId).maybeSingle();
   if (error || !account) throw new Error("Forbidden");
   if (kind === "tracking") {
     // No verified conversion-setup ingestion exists while Pipeboard is held.
@@ -46,7 +47,15 @@ export async function auditSavedAccount(client: Client, workspaceId: string, acc
     if (saveError) throw new Error("تعذّر حفظ تدقيق التتبع.");
     return report;
   }
-  const report = structureAudit([], "2026-01-01", "2026-01-31");
+  if (!account.timezone) throw new Error("المنطقة الزمنية للحساب غير متاحة.");
+  const today = accountCalendarDay(account.timezone);
+  const until = new Date(Date.parse(today) - 7 * 86400000).toISOString().slice(0, 10);
+  const since = new Date(Date.parse(until) - 30 * 86400000).toISOString().slice(0, 10);
+  const { data: rows, error: readError } = await client.from("campaign_snapshots").select("external_id,name,day,metrics,data_maturity,fetched_at,level,parent_external_id,breakdowns").eq("workspace_id", workspaceId).eq("ad_account_id", accountId).gte("day", since).lt("day", until).eq("level", "campaign").order("id").limit(1001);
+  if (readError) throw new Error("تعذّر قراءة أدلة الهيكل.");
+  const report = structureAudit((rows?.length ?? 0) > 1000 ? [] : rows ?? [], since, until);
+  report.limitations.push("الفحص وصفي للبيانات المحفوظة؛ التتبع وتأخر التحويل غير متحققين مباشرة.");
+  if ((rows?.length ?? 0) > 1000) report.limitations.push("السجلات تتجاوز حد الفحص؛ لم تُستنتج أعراض من قراءة جزئية.");
   const { error: saveError } = await client.from("structure_audits").insert({ workspace_id: workspaceId, ad_account_id: accountId, platform: account.platform, ...report });
   if (saveError) throw new Error("تعذّر حفظ تدقيق الهيكل.");
   return report;
