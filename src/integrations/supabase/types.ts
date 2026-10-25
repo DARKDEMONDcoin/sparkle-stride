@@ -512,6 +512,68 @@ export type Database = {
         }
         Relationships: []
       }
+      ads_baseline_sources: {
+        Row: {
+          ad_account_id: string
+          baseline_id: string
+          created_at: string
+          id: string
+          payload: Json
+          snapshot_id: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          ad_account_id: string
+          baseline_id: string
+          created_at?: string
+          id?: string
+          payload: Json
+          snapshot_id: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          ad_account_id?: string
+          baseline_id?: string
+          created_at?: string
+          id?: string
+          payload?: Json
+          snapshot_id?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ads_baseline_sources_ad_account_id_fkey"
+            columns: ["ad_account_id"]
+            isOneToOne: false
+            referencedRelation: "ad_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ads_baseline_sources_baseline_id_fkey"
+            columns: ["baseline_id"]
+            isOneToOne: false
+            referencedRelation: "account_baselines"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ads_baseline_sources_snapshot_id_fkey"
+            columns: ["snapshot_id"]
+            isOneToOne: false
+            referencedRelation: "campaign_snapshots"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ads_baseline_sources_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       api_usage: {
         Row: {
           created_at: string
@@ -977,6 +1039,7 @@ export type Database = {
           creatives: Json
           decided_at: string | null
           decided_by: string | null
+          employee_id: string | null
           external_campaign_id: string | null
           id: string
           lessons_from_history: Json | null
@@ -995,6 +1058,7 @@ export type Database = {
           creatives?: Json
           decided_at?: string | null
           decided_by?: string | null
+          employee_id?: string | null
           external_campaign_id?: string | null
           id?: string
           lessons_from_history?: Json | null
@@ -1013,6 +1077,7 @@ export type Database = {
           creatives?: Json
           decided_at?: string | null
           decided_by?: string | null
+          employee_id?: string | null
           external_campaign_id?: string | null
           id?: string
           lessons_from_history?: Json | null
@@ -3304,6 +3369,7 @@ export type Database = {
           created_at: string
           decided_at: string | null
           decided_by: string | null
+          employee_id: string | null
           error: string | null
           estimated_impact: string | null
           evidence: Json
@@ -3329,6 +3395,7 @@ export type Database = {
           created_at?: string
           decided_at?: string | null
           decided_by?: string | null
+          employee_id?: string | null
           error?: string | null
           estimated_impact?: string | null
           evidence?: Json
@@ -3354,6 +3421,7 @@ export type Database = {
           created_at?: string
           decided_at?: string | null
           decided_by?: string | null
+          employee_id?: string | null
           error?: string | null
           estimated_impact?: string | null
           evidence?: Json
@@ -4548,6 +4616,16 @@ export type Database = {
       accept_workspace_invitation: {
         Args: { _token_hash: string }
         Returns: string
+      }
+      ads_baseline_page: {
+        Args: {
+          p_baseline_id: string
+          p_job_id: string
+          p_since: string
+          p_today: string
+          p_token: string
+        }
+        Returns: boolean
       }
       ads_checkpoint_job: {
         Args: {
