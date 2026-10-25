@@ -777,6 +777,10 @@ export async function executeSkill(
     saveToTasks?: boolean;
   },
 ): Promise<SkillRun> {
+  if (params.employeeId === "abdullah") {
+    const { abdullahEvidenceReply } = await import("./ads/baseline.server");
+    return { output: await abdullahEvidenceReply(client, params.workspaceId), messageId: null, taskId: null, title: "مراجعة أدلة الحساب", channel: "ads" };
+  }
   // المفاتيح تُقرأ داخل freeChat من طبقة مفاتيح الخادم الموحّدة.
   const apiKey = "";
 

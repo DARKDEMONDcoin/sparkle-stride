@@ -20,6 +20,13 @@ export const runCollabTaskWithEmployee = createServerFn({ method: "POST" }).midd
     if (error || !task) throw new Error("المهمة غير متاحة لك.");
     const employee = task.ai_employee_id;
     if (!employee || !ROLES[employee]) throw new Error("أسند المهمة إلى موظف رقمي أولاً.");
+    if (employee === "abdullah") {
+      const { abdullahEvidenceReply } = await import("./ads/baseline.server");
+      const output = await abdullahEvidenceReply(context.supabase, task.workspace_id);
+      const { error: saveError } = await context.supabase.from("collaboration_tasks").update({ ai_output: output, ai_status: "done" }).eq("id", task.id);
+      if (saveError) throw new Error("تعذّر حفظ تقرير الأدلة.");
+      return { output };
+    }
     if (task.ai_status === "running") throw new Error("الموظف يعمل على المهمة بالفعل.");
     const [{ data: project }, { data: workspace }] = await Promise.all([
       context.supabase.from("collaboration_projects").select("name, description").eq("id", task.project_id).maybeSingle(),
