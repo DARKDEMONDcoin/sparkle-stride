@@ -3,6 +3,7 @@
  * تنفّذ نفس الواجهة، فلا يتغير عبدالله عند تبديل طريقة الربط.
  */
 import type { ProposedChange } from "./guardrails";
+import type { ConversionLag, ConversionSetup, HistoricalChange, HistoryPage, LandingPageMetric } from "./history-contracts";
 
 export type AdPlatform = "google" | "meta" | "tiktok" | "linkedin";
 export type DateRange = { since: string; until: string };
@@ -17,6 +18,12 @@ export interface AdPlatformProvider {
   getCampaigns(accountId: string, range: DateRange): Promise<Entity[]>;
   getAdGroupsOrAdSets(campaignId: string): Promise<Entity[]>;
   getAds(adGroupId: string): Promise<Entity[]>;
+  getAssetGroups(accountId: string, range: DateRange): Promise<Entity[]>;
+  getHistoryPage(accountId: string, range: DateRange, granularity: "daily" | "weekly", cursor: string | null): Promise<HistoryPage>;
+  getChangeHistory(accountId: string, range: DateRange): Promise<{ events: HistoricalChange[]; nextCursor: string | null }>;
+  getConversionLag(accountId: string, range: DateRange): Promise<ConversionLag>;
+  getLandingPageMetrics(accountId: string, range: DateRange): Promise<{ rows: LandingPageMetric[]; nextCursor: string | null }>;
+  getConversionSetup(accountId: string): Promise<ConversionSetup>;
   getKeywordsAndSearchTerms?(campaignId: string): Promise<{ keywords: Entity[]; searchTerms: Entity[] }>;
   getPerformanceMetrics(entityId: string, range: DateRange, breakdowns?: string[]): Promise<Metrics>;
   createCampaignDraft(spec: unknown): Promise<{ externalId: string }>;
@@ -41,6 +48,12 @@ function comingSoon(platform: "tiktok" | "linkedin"): AdPlatformProvider {
     getCampaigns: fail,
     getAdGroupsOrAdSets: fail,
     getAds: fail,
+    getAssetGroups: fail,
+    getHistoryPage: fail,
+    getChangeHistory: fail,
+    getConversionLag: fail,
+    getLandingPageMetrics: fail,
+    getConversionSetup: fail,
     getPerformanceMetrics: fail,
     createCampaignDraft: fail,
     updateEntity: fail,
