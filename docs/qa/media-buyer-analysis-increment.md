@@ -9,6 +9,8 @@
 - Shared Abdullah evidence replies show up to three stored proposal summaries, clearly labeled historical records rather than new validated recommendations.
 
 ## Remaining
+- Verification: 59 targeted ads tests passed; preview build OK. Live permission inspection confirmed the decision RPC is service-only. All three pages redirected signed-out users to `/auth?mode=signin` with no page errors after fixing the shared loading-text hydration mismatch. Signed-in views remain unverified.
+- The two existing app-routing tests still fail because their test container is empty when rendering the document-level root; this previously documented test limitation was not changed. No live proposal edit/reject or concurrent database decision test was performed.
 - Step 5 is not fully operational: no verified ready baseline ingestion, LLM recommendation generation/save flow, complete provider-specific tracking/structure audits, scores, live pre-change capture or platform dry-run/execution exists. Existing stored proposals can be read/rejected; editing still requires ready baseline via database gate.
 - Full compact LLM analysis, automatic recommendation cards with in-chat decision controls, staged consolidation, batch low-risk approvals and live execution await further implementation/verified evidence. No fabricated recommendations seeded.
 - Account-backed UI testing unavailable with external unmanaged authentication. Browser public navigation encounters existing loading/sign-in state; that is not end-to-end verification.
