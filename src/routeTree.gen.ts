@@ -83,6 +83,7 @@ import { Route as ApiPublicTelegramNotifyRouteImport } from './routes/api/public
 import { Route as ApiPublicTrackRouteImport } from './routes/api/public/track'
 import { Route as AppAdsBaselineRouteImport } from './routes/app.ads.baseline'
 import { Route as AppAdsCampaignsRouteImport } from './routes/app.ads.campaigns'
+import { Route as AppAdsDraftsRouteImport } from './routes/app.ads.drafts'
 import { Route as AppAdsLandingPagesRouteImport } from './routes/app.ads.landing-pages'
 import { Route as AppAdsRecommendationsRouteImport } from './routes/app.ads.recommendations'
 import { Route as AppAdsStructureRouteImport } from './routes/app.ads.structure'
@@ -469,6 +470,11 @@ const AppAdsCampaignsRoute = AppAdsCampaignsRouteImport.update({
   path: '/ads/campaigns',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAdsDraftsRoute = AppAdsDraftsRouteImport.update({
+  id: '/ads/drafts',
+  path: '/ads/drafts',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppAdsLandingPagesRoute = AppAdsLandingPagesRouteImport.update({
   id: '/ads/landing-pages',
   path: '/ads/landing-pages',
@@ -602,6 +608,7 @@ export interface FileRoutesByFullPath {
   '/api/public/track': typeof ApiPublicTrackRoute
   '/app/ads/baseline': typeof AppAdsBaselineRoute
   '/app/ads/campaigns': typeof AppAdsCampaignsRoute
+  '/app/ads/drafts': typeof AppAdsDraftsRoute
   '/app/ads/landing-pages': typeof AppAdsLandingPagesRoute
   '/app/ads/recommendations': typeof AppAdsRecommendationsRoute
   '/app/ads/structure': typeof AppAdsStructureRoute
@@ -687,6 +694,7 @@ export interface FileRoutesByTo {
   '/api/public/track': typeof ApiPublicTrackRoute
   '/app/ads/baseline': typeof AppAdsBaselineRoute
   '/app/ads/campaigns': typeof AppAdsCampaignsRoute
+  '/app/ads/drafts': typeof AppAdsDraftsRoute
   '/app/ads/landing-pages': typeof AppAdsLandingPagesRoute
   '/app/ads/recommendations': typeof AppAdsRecommendationsRoute
   '/app/ads/structure': typeof AppAdsStructureRoute
@@ -775,6 +783,7 @@ export interface FileRoutesById {
   '/api/public/track': typeof ApiPublicTrackRoute
   '/app/ads/baseline': typeof AppAdsBaselineRoute
   '/app/ads/campaigns': typeof AppAdsCampaignsRoute
+  '/app/ads/drafts': typeof AppAdsDraftsRoute
   '/app/ads/landing-pages': typeof AppAdsLandingPagesRoute
   '/app/ads/recommendations': typeof AppAdsRecommendationsRoute
   '/app/ads/structure': typeof AppAdsStructureRoute
@@ -864,6 +873,7 @@ export interface FileRouteTypes {
     | '/api/public/track'
     | '/app/ads/baseline'
     | '/app/ads/campaigns'
+    | '/app/ads/drafts'
     | '/app/ads/landing-pages'
     | '/app/ads/recommendations'
     | '/app/ads/structure'
@@ -949,6 +959,7 @@ export interface FileRouteTypes {
     | '/api/public/track'
     | '/app/ads/baseline'
     | '/app/ads/campaigns'
+    | '/app/ads/drafts'
     | '/app/ads/landing-pages'
     | '/app/ads/recommendations'
     | '/app/ads/structure'
@@ -1036,6 +1047,7 @@ export interface FileRouteTypes {
     | '/api/public/track'
     | '/app/ads/baseline'
     | '/app/ads/campaigns'
+    | '/app/ads/drafts'
     | '/app/ads/landing-pages'
     | '/app/ads/recommendations'
     | '/app/ads/structure'
@@ -1623,6 +1635,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAdsCampaignsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/ads/drafts': {
+      id: '/app/ads/drafts'
+      path: '/ads/drafts'
+      fullPath: '/app/ads/drafts'
+      preLoaderRoute: typeof AppAdsDraftsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/ads/landing-pages': {
       id: '/app/ads/landing-pages'
       path: '/ads/landing-pages'
@@ -1744,6 +1763,7 @@ interface AppRouteChildren {
   AppIndexRoute: typeof AppIndexRoute
   AppAdsBaselineRoute: typeof AppAdsBaselineRoute
   AppAdsCampaignsRoute: typeof AppAdsCampaignsRoute
+  AppAdsDraftsRoute: typeof AppAdsDraftsRoute
   AppAdsLandingPagesRoute: typeof AppAdsLandingPagesRoute
   AppAdsRecommendationsRoute: typeof AppAdsRecommendationsRoute
   AppAdsStructureRoute: typeof AppAdsStructureRoute
@@ -1779,6 +1799,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppIndexRoute: AppIndexRoute,
   AppAdsBaselineRoute: AppAdsBaselineRoute,
   AppAdsCampaignsRoute: AppAdsCampaignsRoute,
+  AppAdsDraftsRoute: AppAdsDraftsRoute,
   AppAdsLandingPagesRoute: AppAdsLandingPagesRoute,
   AppAdsRecommendationsRoute: AppAdsRecommendationsRoute,
   AppAdsStructureRoute: AppAdsStructureRoute,
