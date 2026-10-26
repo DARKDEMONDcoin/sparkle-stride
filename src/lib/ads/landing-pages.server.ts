@@ -43,7 +43,7 @@ export async function auditPublicAdPage(client: Client, page: { id: string; work
       const { freeChat, parseJson } = await import("@/lib/nour-research.server");
       const [account, guidelines, baseline] = await Promise.all([
         client.from("ad_accounts").select("platform,currency,timezone").eq("workspace_id", page.workspace_id).eq("id", page.ad_account_id).maybeSingle(),
-        client.from("brain_items").select("kind,used_by,title,body").eq("workspace_id", page.workspace_id).eq("kind", "employee_guideline").contains("used_by", ["abdullah"]).limit(100),
+        client.from("brain_items").select("kind,meta,used_by,title,body").eq("workspace_id", page.workspace_id).eq("kind", "employee_guideline").contains("used_by", ["abdullah"]).limit(100),
         client.from("account_baselines").select("id,status,mode,data_quality,limitations").eq("workspace_id", page.workspace_id).eq("ad_account_id", page.ad_account_id).order("created_at", { ascending: false }).limit(1).maybeSingle(),
       ]);
       if (account.error || guidelines.error || baseline.error) throw new Error("Prompt context unavailable");
