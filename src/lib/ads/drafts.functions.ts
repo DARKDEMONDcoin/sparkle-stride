@@ -26,7 +26,7 @@ export const getAdsSetup = createServerFn({ method: "POST" }).middleware([requir
     const [{ data: profile }, { data: baseline }, { data: drafts }] = await Promise.all([
       context.supabase.from("business_profiles").select("id,answers,site_summary,updated_at").eq("workspace_id", data.workspaceId).eq("ad_account_id", account.id).order("updated_at", { ascending: false }).limit(1).maybeSingle(),
       context.supabase.from("account_baselines").select("id,status,mode,built_at,expires_at").eq("workspace_id", data.workspaceId).eq("ad_account_id", account.id).order("created_at", { ascending: false }).limit(1).maybeSingle(),
-      context.supabase.from("campaign_drafts").select("id,platform,campaign_type,status,spec,lessons_from_history,created_at,decided_at").eq("workspace_id", data.workspaceId).eq("ad_account_id", account.id).eq("employee_id", "abdullah").order("created_at", { ascending: false }).limit(30),
+      context.supabase.from("campaign_drafts").select("id,platform,campaign_type,status,spec,lessons_from_history,creatives,created_at,decided_at").eq("workspace_id", data.workspaceId).eq("ad_account_id", account.id).eq("employee_id", "abdullah").order("created_at", { ascending: false }).limit(30),
     ]);
     return { accounts: accounts ?? [], account, profile: profile ?? null, baseline: baseline ?? null, drafts: drafts ?? [] };
   });

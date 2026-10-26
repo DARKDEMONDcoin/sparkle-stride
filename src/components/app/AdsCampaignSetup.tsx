@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { getAdsSetup, saveAdsIntake, summarizeAdsWebsite, createAdsDraft, decideAdsDraft, createAdsDraftPaused, launchAdsDraft } from "@/lib/ads/drafts.functions";
+import { generateDraftCopy, decideDraftCreative, type DraftCreative } from "@/lib/ads/creatives.functions";
 import { INTAKE_STEPS, allowableCpa, contradictions, feasibility, missingRequired, type IntakeAnswers } from "@/lib/ads/intake";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,7 +35,7 @@ export function AdsCampaignSetup({ workspaceId }: { workspaceId: string }) {
   const [accountId, setAccountId] = useState<string>(); const [open, setOpen] = useState(false); const [step, setStep] = useState(1);
   const [answers, setAnswers] = useState<IntakeAnswers>({}); const [summary, setSummary] = useState<string>("");
   const [busy, setBusy] = useState(false); const [error, setError] = useState(""); const [notice, setNotice] = useState<string[]>([]);
-  const load = useServerFn(getAdsSetup), save = useServerFn(saveAdsIntake), summarize = useServerFn(summarizeAdsWebsite), create = useServerFn(createAdsDraft), decide = useServerFn(decideAdsDraft), pause = useServerFn(createAdsDraftPaused), launch = useServerFn(launchAdsDraft);
+  const load = useServerFn(getAdsSetup), save = useServerFn(saveAdsIntake), summarize = useServerFn(summarizeAdsWebsite), create = useServerFn(createAdsDraft), decide = useServerFn(decideAdsDraft), pause = useServerFn(createAdsDraftPaused), launch = useServerFn(launchAdsDraft), gen = useServerFn(generateDraftCopy), decideC = useServerFn(decideDraftCreative);
   const query = useQuery({ queryKey: ["ads-setup", workspaceId, accountId], queryFn: () => load({ data: { workspaceId, accountId } }), retry: false });
   const data = query.data; const account = data?.account; const platform = (account?.platform === "meta" ? "meta" : "google") as "google" | "meta";
   const run = async (fn: () => Promise<unknown>) => { setBusy(true); setError(""); try { await fn(); await query.refetch(); } catch (e) { setError(e instanceof Error ? e.message : "تعذّر إكمال الطلب."); } finally { setBusy(false); } };
