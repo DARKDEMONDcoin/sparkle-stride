@@ -9,6 +9,7 @@
 - [x] صفحة التكاملات الموحدة ورابط /chat/siraj (يحوّل للمعرّف الدائم).
 # Roadmap
 ## Revised Media Buyer specification — 23 October
+- [ ] October 26 step 10: extend existing Google drafts with Performance Max/Demand Gen planning, type-specific copy and asset checks, owner review, and fail-closed paused creation; Pipeboard remains held. No deployment requested for this increment.
 - [x] October 26 step 7 configuration increment: complete verbatim six-section playbook and base prompt, editable page-output contract, typed task/platform selection, active gated page-model and Abdullah smalltalk composition. Deterministic evidence-only paths and Adam unchanged. 38 tests pass; build OK; no deployment. Details: docs/qa/media-buyer-playbook-increment.md. Stopped before step 8 pending owner confirmation.
 - [x] October 25 step 6 provider-independent increment: Landing Pages navigation, bounded saved-destination discovery, public IPv4-pinned reads, PageSpeed lab/field evidence, static checklist, private baseline-gated fix tickets and owner confirmation; 96 focused tests and preview build pass. Details: docs/qa/media-buyer-landing-increment.md. No deployment; stopped before step 7.
 - [ ] Step 6 operational completion: live URL/page metrics and opportunity comparisons blocked by Pipeboard hold; message-match inputs/browser screenshots, page briefs/realignment/test-plan generation incomplete; automatic re-audit and lag-aware learning need verified data plus queue/cost approval. PageSpeed live key/quota and signed-in flow unverified with external unmanaged auth.
