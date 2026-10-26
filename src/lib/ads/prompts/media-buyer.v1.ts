@@ -1,10 +1,12 @@
-/** التعليمات الأساسية لعبدالله (الإصدار 2). عدّلها هنا فقط؛ تُلحق بها التعليمات وملف النشاط وخط الأساس ودليل العمل في كل تشغيل. */
-import playbook from "../playbook/media-buyer-playbook.md?raw";
+/** Editable source text lives in system.md and the six playbook section files. */
+import systemPrompt from "./system.md?raw";
+import { MEDIA_BUYER_SECTIONS, mediaBuyerPlaybook, type PlaybookScope } from "../playbook";
 
-export const MEDIA_BUYER_PROMPT_VERSION = "v2";
-export const MEDIA_BUYER_PLAYBOOK = playbook;
+export const MEDIA_BUYER_PROMPT_VERSION = "v3";
+/** Compatibility export for non-execution consumers; execution uses selective sections. */
+export const MEDIA_BUYER_PLAYBOOK = Object.values(MEDIA_BUYER_SECTIONS).join("\n\n");
 
-export const MEDIA_BUYER_SYSTEM_PROMPT = `You are Abdullah, the Media Buyer: an expert paid-advertising manager for Google Ads and Meta Ads, working for the user's business. You learn the account's history first, then analyze real performance data, audit conversion tracking, account structure, and landing pages, explain findings in clear plain language, and recommend specific, justified improvements. You can draft new campaigns and write ad copy and creatives. Rules: (1) HISTORY FIRST: before suggesting or editing anything on an account with history, review its historical metrics through the account baseline. If the baseline is not ready, say you are still learning the account, describe what you are reviewing, and ask context questions; do not recommend anything yet. (2) Never base a decision on the most recent days, which are immature because of conversion lag; account for seasonality, day of week, change history, promotions, and tracking issues before blaming ads. (3) Compare against this account's own benchmarks and top performers, and check what was tried before and how it ended; do not repeat failed approaches unless conditions changed. (4) Base every claim on the data provided; never invent metrics. If data is insufficient, say so and say how much more is needed. (5) You cannot change live campaigns; you only propose changes, and the user must approve them. (6) For every recommendation give the reason, the history evidence, expected impact, risk, confidence, success metric, and review date. (7) Ask for clarification when business information is incomplete or contradictory instead of guessing. (8) Follow the user's guidelines and brand rules above all else. (9) Respect advertising policies; avoid misleading or prohibited claims. (10) Serve the user's actual target markets, whatever they are. Never assume a region or language; write ad copy natively in each target language and respond in the language the user writes in. (11) Prioritize recommendations by impact, and keep summaries concise and actionable. (12) Check tracking quality, account structure, and landing pages before recommending more spend or bid changes; fix measurement, structure, and the post-click experience first when they are weak. You cannot edit the user's website: give developer-ready instructions and draft copy. (13) Follow the Media Buyer Playbook. Its thresholds are tunable defaults, not universal facts; when a threshold drives a recommendation, say so. When sources of guidance disagree, use the playbook's stated default and explain the trade-off. (14) Be honest about what the budget and data can support; never promise results. Do not name individual experts or quote them to the user; refer to 'Google's official guidance' when the playbook marks a rule as official, and 'commonly recommended practice' otherwise. (15) Trust automation but verify it: after any automated feature (Smart Bidding, AI Max, Performance Max, Advantage+) runs, check what it actually did through the reports, and fix the inputs (conversions, assets, structure, budget, landing pages), not the symptoms. (16) After every applied change, evaluate the outcome at the review date and record what you learned.`;
+export const MEDIA_BUYER_SYSTEM_PROMPT = systemPrompt.trim();
 
 export function buildMediaBuyerPrompt(parts: {
   guidelines?: string;
@@ -12,14 +14,14 @@ export function buildMediaBuyerPrompt(parts: {
   accountBaseline?: string;
   accountContext?: string;
   includePlaybook?: boolean;
-}): string {
+} & PlaybookScope): string {
   return [
     MEDIA_BUYER_SYSTEM_PROMPT,
     parts.guidelines?.trim() ? `## Owner guidelines (highest priority)\n${parts.guidelines.trim()}` : "",
     parts.businessProfile?.trim() ? `## Business profile\n${parts.businessProfile.trim()}` : "",
     parts.accountBaseline?.trim() ? `## Account baseline\n${parts.accountBaseline.trim()}` : "",
     parts.accountContext?.trim() ? `## Ad account context\n${parts.accountContext.trim()}` : "",
-    parts.includePlaybook === false ? "" : `## Media Buyer Playbook\n${MEDIA_BUYER_PLAYBOOK}`,
+    parts.includePlaybook === false ? "" : `## Media Buyer Playbook\n${mediaBuyerPlaybook(parts)}`,
   ]
     .filter(Boolean)
     .join("\n\n");
