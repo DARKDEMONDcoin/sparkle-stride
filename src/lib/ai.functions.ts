@@ -30,6 +30,7 @@ import { buildBrandContext } from "@/lib/brand-context.server";
 import { planTurn, turnPlanBlock } from "@/lib/turn-plan";
 import { composeChatOutputs } from "./chat-outputs";
 import { mediaBuyerGuidelines } from "./ads/guidelines";
+import { buildMediaBuyerPrompt } from "./ads/prompts/media-buyer.v1";
 
 type Deliverable = {
   title?: string;
@@ -1034,6 +1035,7 @@ export async function runEmployeeTurn(
         teamActivity,
       }),
       expertMindBlock(agentId, intent),
+      agentId === "abdullah" ? buildMediaBuyerPrompt({ task: "conversation" }) : "",
       intent !== "smalltalk" ? toolbeltBlock(agentId) : "",
       agentId === "abdullah" ? mediaBuyerGuidelines(brain ?? []) : intent !== "smalltalk"
         ? (() => {
