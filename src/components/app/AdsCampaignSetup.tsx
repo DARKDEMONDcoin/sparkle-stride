@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { getAdsSetup, saveAdsIntake, summarizeAdsWebsite, createAdsDraft, decideAdsDraft, createAdsDraftPaused, launchAdsDraft } from "@/lib/ads/drafts.functions";
+import { generateDraftCopy, decideDraftCreative, type DraftCreative } from "@/lib/ads/creatives.functions";
 import { INTAKE_STEPS, allowableCpa, contradictions, feasibility, missingRequired, type IntakeAnswers } from "@/lib/ads/intake";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,7 +35,7 @@ export function AdsCampaignSetup({ workspaceId }: { workspaceId: string }) {
   const [accountId, setAccountId] = useState<string>(); const [open, setOpen] = useState(false); const [step, setStep] = useState(1);
   const [answers, setAnswers] = useState<IntakeAnswers>({}); const [summary, setSummary] = useState<string>("");
   const [busy, setBusy] = useState(false); const [error, setError] = useState(""); const [notice, setNotice] = useState<string[]>([]);
-  const load = useServerFn(getAdsSetup), save = useServerFn(saveAdsIntake), summarize = useServerFn(summarizeAdsWebsite), create = useServerFn(createAdsDraft), decide = useServerFn(decideAdsDraft), pause = useServerFn(createAdsDraftPaused), launch = useServerFn(launchAdsDraft);
+  const load = useServerFn(getAdsSetup), save = useServerFn(saveAdsIntake), summarize = useServerFn(summarizeAdsWebsite), create = useServerFn(createAdsDraft), decide = useServerFn(decideAdsDraft), pause = useServerFn(createAdsDraftPaused), launch = useServerFn(launchAdsDraft), gen = useServerFn(generateDraftCopy), decideC = useServerFn(decideDraftCreative);
   const query = useQuery({ queryKey: ["ads-setup", workspaceId, accountId], queryFn: () => load({ data: { workspaceId, accountId } }), retry: false });
   const data = query.data; const account = data?.account; const platform = (account?.platform === "meta" ? "meta" : "google") as "google" | "meta";
   const run = async (fn: () => Promise<unknown>) => { setBusy(true); setError(""); try { await fn(); await query.refetch(); } catch (e) { setError(e instanceof Error ? e.message : "تعذّر إكمال الطلب."); } finally { setBusy(false); } };
@@ -66,6 +67,16 @@ export function AdsCampaignSetup({ workspaceId }: { workspaceId: string }) {
         <dl className="grid gap-2 text-sm sm:grid-cols-3"><div><dt className="text-muted-foreground">الميزانية الشهرية</dt><dd>{s["budget"]?.monthly} {s["budget"]?.currency ?? ""}</dd></div><div><dt className="text-muted-foreground">يومياً تقريباً</dt><dd>{s["budget"]?.derivedDaily ?? "—"}</dd></div><div><dt className="text-muted-foreground">التكلفة المؤكدة</dt><dd>{s["budget"]?.confirmedCpa ?? "—"}</dd></div><div><dt className="text-muted-foreground">جاهزية التتبع</dt><dd>{s["trackingReadiness"] === "ready" ? "جاهز" : "يبدأ بالإصلاح"}</dd></div><div><dt className="text-muted-foreground">الأسواق</dt><dd>{(s["markets"] ?? []).map((m: any) => `${m.market} (${m.language})`).join("، ")}</dd></div>{s["specialAdCategories"]?.length > 0 && <div><dt className="text-muted-foreground">فئات إعلانية خاصة</dt><dd>{s["specialAdCategories"].join("، ")}</dd></div>}</dl>
         {s["budget"]?.learning?.issues?.length > 0 && <ul className="list-disc space-y-1 pe-5 text-sm text-destructive">{s["budget"].learning.issues.map((i: string) => <li key={i}>{i}</li>)}</ul>}
         <div className="text-sm"><p className="text-muted-foreground">دروس من تاريخ الحساب</p><ul className="list-disc pe-5">{lessons.map((l) => <li key={l.learning}>{l.learning}</li>)}</ul></div>
+        {d.status === "approved" && <div className="space-y-3"><div className="flex items-center justify-between gap-2"><p className="text-sm font-medium">نصوص الإعلانات (مولّدة بالذكاء الاصطناعي — اعتمد كل نص على حدة)</p><Button size="sm" variant="outline" disabled={busy} onClick={() => void run(() => gen({ data: { workspaceId, draftId: d.id } }))}>كتابة النصوص</Button></div>
+          {((Array.isArray(d.creatives) ? d.creatives : []) as unknown as DraftCreative[]).map((c) => <div key={c.id} className="space-y-2 rounded-md border border-border p-3 text-sm" dir="auto">
+            <div className="flex flex-wrap items-center justify-between gap-2"><span className="font-medium">{c.concept} · {c.market} ({c.language})</span><span className="text-xs text-muted-foreground">{c.status === "approved" ? "معتمد" : c.status === "rejected" ? "مرفوض" : "بانتظار قرارك"}</span></div>
+            <p className="text-xs text-muted-foreground">{c.hypothesis}</p>
+            {c.primary.map((t, i) => <p key={`p${i}`}>{t} <span className="text-xs text-muted-foreground">({[...t].length})</span></p>)}
+            <ul className="space-y-0.5">{c.headlines.map((h, i) => <li key={`h${i}`}>{h} <span className={d.platform === "google" && [...h].length > 30 ? "text-xs text-destructive" : "text-xs text-muted-foreground"}>({[...h].length}{d.platform === "google" ? "/30" : ""})</span></li>)}</ul>
+            {c.descriptions.map((t, i) => <p key={`d${i}`} className="text-muted-foreground">{t} <span className="text-xs">({[...t].length}{d.platform === "google" ? "/90" : ""})</span></p>)}
+            {c.issues.length > 0 && <ul className="list-disc pe-5 text-xs text-destructive">{c.issues.map((x) => <li key={x}>{x}</li>)}</ul>}
+            {c.status === "pending" && <div className="flex gap-2"><Button size="sm" disabled={busy || c.issues.length > 0} onClick={() => void run(() => decideC({ data: { workspaceId, draftId: d.id, creativeId: c.id, decision: "approve" } }))}><Check className="size-4" />اعتماد</Button><Button size="sm" variant="ghost" disabled={busy} onClick={() => void run(() => decideC({ data: { workspaceId, draftId: d.id, creativeId: c.id, decision: "reject" } }))}><X className="size-4" />رفض</Button></div>}
+          </div>)}</div>}
         <div className="flex flex-wrap gap-2">
           {d.status === "awaiting_approval" && <><Button size="sm" disabled={busy} onClick={() => void run(() => decide({ data: { workspaceId, draftId: d.id, decision: "approve" } }))}><Check className="size-4" />اعتماد الخطة</Button><Button size="sm" variant="outline" disabled={busy} onClick={() => void run(() => decide({ data: { workspaceId, draftId: d.id, decision: "reject" } }))}><X className="size-4" />رفض</Button></>}
           {d.status === "approved" && <Button size="sm" variant="outline" disabled={busy} onClick={() => void run(() => pause({ data: { workspaceId, draftId: d.id } }))}><PauseCircle className="size-4" />إنشاء متوقف على المنصة</Button>}
