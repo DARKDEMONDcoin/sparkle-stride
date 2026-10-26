@@ -28,7 +28,14 @@ export const getAdsSetup = createServerFn({ method: "POST" }).middleware([requir
       context.supabase.from("account_baselines").select("id,status,mode,built_at,expires_at").eq("workspace_id", data.workspaceId).eq("ad_account_id", account.id).order("created_at", { ascending: false }).limit(1).maybeSingle(),
       context.supabase.from("campaign_drafts").select("id,platform,campaign_type,status,spec,lessons_from_history,creatives,created_at,decided_at").eq("workspace_id", data.workspaceId).eq("ad_account_id", account.id).eq("employee_id", "abdullah").order("created_at", { ascending: false }).limit(30),
     ]);
-    return { accounts: accounts ?? [], account, profile: profile ?? null, baseline: baseline ?? null, drafts: drafts ?? [] };
+    const paths = (drafts ?? []).flatMap((d) => (Array.isArray(d.creatives) ? d.creatives : []).flatMap((c) => ((c as { images?: { path: string }[] }).images ?? []).map((i) => i.path))).filter((p) => p.startsWith(`${data.workspaceId}/ads/`));
+    const urls: Record<string, string> = {};
+    if (paths.length) {
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      const { data: signed } = await supabaseAdmin.storage.from("nour-media").createSignedUrls(paths, 3600);
+      for (const s of signed ?? []) if (s.path && s.signedUrl) urls[s.path] = s.signedUrl;
+    }
+    return { accounts: accounts ?? [], account, profile: profile ?? null, baseline: baseline ?? null, drafts: drafts ?? [], imageUrls: urls };
   });
 
 export const saveAdsIntake = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).inputValidator((i: unknown) => z.object({ workspaceId: z.string().uuid(), accountId: z.string().uuid(), answers: answersSchema, siteSummary: z.string().max(4000).nullable().optional() }).parse(i))
